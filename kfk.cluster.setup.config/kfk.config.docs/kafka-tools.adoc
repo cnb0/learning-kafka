@@ -1,0 +1,45 @@
+== Kafka Tools
+
+Kafka tools includes the following administration tools:
+
+* <<kafka-admin-AclCommand.adoc#, AclCommand>>
+
+* <<kafka-admin-ConfigCommand.adoc#, ConfigCommand>>
+
+* <<kafka-admin-ConsumerGroupCommand.adoc#, ConsumerGroupCommand>>
+
+* `DelegationTokenCommand`
+
+* `DeleteRecordsCommand`
+
+* <<kafka-tools-DumpLogSegments.adoc#, DumpLogSegments>>
+
+* `EndToEndLatency`
+
+* link:kafka-admin-LeaderElectionCommand.adoc[LeaderElectionCommand]
+
+* `LogDirsCommand`
+
+* <<kafka-admin-ReassignPartitionsCommand.adoc#, ReassignPartitionsCommand>>
+
+* link:kafka-tools-ReplicaVerificationTool.adoc[ReplicaVerificationTool]
+
+* `StreamsResetter`
+
+* <<kafka-admin-TopicCommand.adoc#, TopicCommand>>
+
+=== [[ConsoleProducer]] `ConsoleProducer`
+
+`kafka.tools.ConsoleProducer`
+
+```
+./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic my-topic
+```
+
+=== [[ConsoleConsumer]] `ConsoleConsumer`
+
+`kafka.tools.ConsoleConsumer`
+
+```
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic
+```

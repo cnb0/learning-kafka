@@ -1,0 +1,76 @@
+## KAFKA standalone/confluent Setup
+
+```
+Starting Kafka with the Confluent CLI
+
+        Starting a multi broker Kafka Cluster using Binaries
+        Start Kafka Development environment using Docker
+        Starting a multi broker Kafka Cluster using Docker
+        Kafka Advertised Host Setting
+        Starting Kafka on a Remote Machine
+
+
+KAFKA CLI/UI
+        Kafka Topics CLI
+        Kafka Console Producer CLI
+        Kafka Console Consumer CLI
+        Kafka Consumers in Group
+        Kafka Consumer Groups CLI
+        Resetting Offsets
+        What about UIs? Conduktor
+        KafkaCat as a replacement for Kafka CLI
+
+
+
+KAFKA Admin 
+        Adding and removing topics
+        Modifying topics
+        Graceful shutdown
+        Balancing leadership
+        Checking consumer position
+        Mirroring data between clusters
+        Expanding your cluster
+        Decommissioning brokers
+        Increasing replication factor
+
+Kafka Cluster Setup High Level Architecture Overview
+
+Kafka Monitoring & Operations
+
+Kafka Security
+
+Kafka Multi Cluster & MirrorMaker
+
+KAFKA API
+        Producer API
+        Consumer API
+        Streams API
+        Connect API
+        AdminClient API
+
+KAFKA CONFIG
+        Broker 
+        Topic 
+            Segment and Indexes
+            Log Cleanup Policies
+            Log Cleanup Delete
+            Log Compaction Theory
+            Log Compaction Practice
+            min.insync.replicas reminder
+            Unclean Leader Election
+
+        Producer  
+        Consumer 
+        Kafka Connect Configs
+        Kafka Streams Configs
+        AdminClient Configs
+        Important Client Configs
+        A Production Server Configs
+
+Hardware and OS Config
+        OS
+        Disks and Filesystems
+        Application vs OS Flush Management
+        Linux Flush Behavior
+        Ext4 Notes
+```

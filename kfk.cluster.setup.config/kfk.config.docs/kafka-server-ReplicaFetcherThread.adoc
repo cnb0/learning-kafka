@@ -1,0 +1,147 @@
+== [[ReplicaFetcherThread]] ReplicaFetcherThread
+
+`ReplicaFetcherThread` is an uninterruptible <<kafka-server-AbstractFetcherThread.adoc#, AbstractFetcherThread>> that...FIXME
+
+`ReplicaFetcherThread` is used (_managed_) by link:kafka-server-ReplicaFetcherManager.adoc[ReplicaFetcherManager].
+
+`ReplicaFetcherThread` is <<creating-instance, created>> when `ReplicaFetcherManager` is requested to link:kafka-server-ReplicaFetcherManager.adoc#createFetcherThread[create a fetcher thread] (when...FIXME).
+
+`ReplicaFetcherThread` uses <<kafka-properties.adoc#replica.fetch.backoff.ms, replica.fetch.backoff.ms>> configuration property for the <<kafka-server-AbstractFetcherThread.adoc#fetchBackOffMs, fetchBackOffMs>>.
+
+[[fetchSize]]
+[[replica.fetch.max.bytes]]
+`ReplicaFetcherThread` uses link:kafka-properties.adoc#replica.fetch.max.bytes[replica.fetch.max.bytes] configuration property for...FIXME
+
+=== [[creating-instance]] Creating ReplicaFetcherThread Instance
+
+`ReplicaFetcherThread` takes the following to be created:
+
+* [[name]] Name
+* [[fetcherId]] Fetcher ID
+* [[sourceBroker]] Source `BrokerEndPoint`
+* [[brokerConfig]] link:kafka-server-KafkaConfig.adoc[KafkaConfig]
+* [[replicaMgr]] link:kafka-server-ReplicaManager.adoc[ReplicaManager]
+* [[metrics]] link:kafka-Metrics.adoc[Metrics]
+* [[time]] `Time`
+* [[quota]] `ReplicaQuota`
+* [[leaderEndpointBlockingSend]] Optional `BlockingSend` (default: `None`)
+
+`ReplicaFetcherThread` initializes the <<internal-properties, internal properties>>.
+
+=== [[earliestOrLatestOffset]] `earliestOrLatestOffset` Internal Method
+
+[source, scala]
+----
+earliestOrLatestOffset(topicPartition: TopicPartition, earliestOrLatest: Long): Long
+----
+
+`earliestOrLatestOffset`...FIXME
+
+NOTE: `earliestOrLatestOffset` is used when...FIXME
+
+=== [[fetchEpochsFromLeader]] `fetchEpochsFromLeader` Method
+
+[source, scala]
+----
+fetchEpochsFromLeader(partitions: Map[TopicPartition, Int]): Map[TopicPartition, EpochEndOffset]
+----
+
+NOTE: `fetchEpochsFromLeader` is a part of link:kafka-server-AbstractFetcherThread.adoc#fetchEpochsFromLeader[AbstractFetcherThread Contract].
+
+`fetchEpochsFromLeader`...FIXME
+
+=== [[processPartitionData]] `processPartitionData` Method
+
+[source, scala]
+----
+processPartitionData(
+  topicPartition: TopicPartition,
+  fetchOffset: Long,
+  partitionData: FetchData): Option[LogAppendInfo]
+----
+
+NOTE: `processPartitionData` is part of the <<kafka-server-AbstractFetcherThread.adoc#processPartitionData, AbstractFetcherThread Contract>> to...FIXME.
+
+`processPartitionData`...FIXME
+
+=== [[truncate]] `truncate` Method
+
+[source, scala]
+----
+truncate(
+  tp: TopicPartition,
+  offsetTruncationState: OffsetTruncationState): Unit
+----
+
+NOTE: `truncate` is a part of link:kafka-server-AbstractFetcherThread.adoc#truncate[AbstractFetcherThread Contract].
+
+`truncate`...FIXME
+
+=== [[truncateFullyAndStartAt]] `truncateFullyAndStartAt` Method
+
+[source, scala]
+----
+truncateFullyAndStartAt(topicPartition: TopicPartition, offset: Long): Unit
+----
+
+NOTE: `truncateFullyAndStartAt` is a part of link:kafka-server-AbstractFetcherThread.adoc#truncateFullyAndStartAt[AbstractFetcherThread Contract].
+
+`truncateFullyAndStartAt`...FIXME
+
+=== [[latestEpoch]] `latestEpoch` Method
+
+[source, scala]
+----
+latestEpoch(topicPartition: TopicPartition): Option[Int]
+----
+
+NOTE: `latestEpoch` is a part of <<kafka-server-AbstractFetcherThread.adoc#latestEpoch, AbstractFetcherThread Contract>> to get the latest (current) leader epoch for the given `TopicPartition`.
+
+`latestEpoch` requests the <<replicaMgr, ReplicaManager>> for the <<kafka-server-ReplicaManager.adoc#localReplicaOrException, local partition replica (or throw an exception)>> for the given `TopicPartition` and requests the replica for the <<kafka-cluster-Replica.adoc#latestEpoch, latest (current) leader epoch>>.
+
+=== [[isOffsetForLeaderEpochSupported]] `isOffsetForLeaderEpochSupported` Method
+
+[source, scala]
+----
+isOffsetForLeaderEpochSupported: Boolean
+----
+
+NOTE: `isOffsetForLeaderEpochSupported` is part of the <<kafka-server-AbstractFetcherThread.adoc#isOffsetForLeaderEpochSupported, AbstractFetcherThread Contract>> to control whether a `OffsetsForLeaderEpochRequest` is supported (that was added in Kafka 0.11.0.0).
+
+`isOffsetForLeaderEpochSupported` simply returns the <<brokerSupportsLeaderEpochRequest, brokerSupportsLeaderEpochRequest>> flag.
+
+=== [[buildFetch]] `buildFetch` Method
+
+[source, scala]
+----
+buildFetch(
+  partitionMap: Map[TopicPartition, PartitionFetchState]
+): ResultWithPartitions[Option[FetchRequest.Builder]]
+----
+
+NOTE: `buildFetch` is part of the <<kafka-server-AbstractFetcherThread.adoc#buildFetch, AbstractFetcherThread Contract>> to...FIXME
+
+`buildFetch` requests the <<fetchSessionHandler, FetchSessionHandler>> for a new `Builder`.
+
+For every `TopicPartition` (in the given `partitionMap`), `buildFetch` finds the link:kafka-log-Log.adoc#logStartOffset[logStartOffset] of the link:kafka-server-ReplicaManager.adoc#localLogOrException[local log] (using the <<replicaMgr, ReplicaManager>>) and adds them as `PartitionData` to the `Builder`.
+
+`buildFetch` requests the `Builder` to create a `FetchRequestData`.
+
+In the end, `buildFetch` creates a `FetchRequest.Builder` for the local partition replica.
+
+=== [[internal-properties]] Internal Properties
+
+[cols="30m,70",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| brokerSupportsLeaderEpochRequest
+a| [[brokerSupportsLeaderEpochRequest]] Flag that says whether the <<kafka-server-KafkaConfig.adoc#interBrokerProtocolVersion, inter.broker.protocol.version>> is `0.11.0-IV2` or above
+
+Used in <<isOffsetForLeaderEpochSupported, isOffsetForLeaderEpochSupported>>
+
+| fetchSessionHandler
+a| [[fetchSessionHandler]] `FetchSessionHandler` (with the <<logContext, logContext>> and the ID of the <<sourceBroker, source broker>>)
+
+|===

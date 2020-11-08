@@ -1,0 +1,274 @@
+== [[ConsumerNetworkClient]] ConsumerNetworkClient
+
+`ConsumerNetworkClient` is a high-level Kafka consumer that...FIXME
+
+`ConsumerNetworkClient` is <<creating-instance, created>> for link:kafka-consumer-KafkaConsumer.adoc#client[KafkaConsumer] and link:kafka-clients-admin-AdminClient.adoc[AdminClient].
+
+[[logging]]
+[TIP]
+====
+Enable `ALL` logging level for `org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient` logger to see what happens inside.
+
+Add the following line to `log4j.properties`:
+
+```
+log4j.logger.org.apache.kafka.clients.consumer.internals.ConsumerNetworkClient=ALL
+```
+
+Refer to link:kafka-logging.adoc[Logging].
+====
+
+=== [[checkDisconnects]] `checkDisconnects` Internal Method
+
+[source, java]
+----
+void checkDisconnects(long now)
+----
+
+`checkDisconnects`...FIXME
+
+NOTE: `checkDisconnects` is used exclusively when `ConsumerNetworkClient` is requested to <<poll, poll>>.
+
+=== [[send]] "Sending" Request to Broker -- `send` Method
+
+[source, java]
+----
+RequestFuture<ClientResponse> send(Node node, AbstractRequest.Builder<?> requestBuilder)
+----
+
+`send` creates a `RequestFutureCompletionHandler` and requests the <<client, KafkaClient>> for a link:kafka-clients-KafkaClient.adoc#newClientRequest[new ClientRequest] (with the `RequestFutureCompletionHandler` and expecting a response).
+
+`send` records the new `ClientRequest` with the `node` in <<unsent, unsent>> internal registry.
+
+`send` requests the <<client, KafkaClient>> to link:kafka-clients-KafkaClient.adoc#wakeup[wake up].
+
+NOTE: `send` is used...FIXME
+
+=== [[wakeup]] `wakeup` Method
+
+[source, scala]
+----
+void wakeup()
+----
+
+`wakeup` prints out the following DEBUG message to the logs:
+
+```
+Received user wakeup
+```
+
+`wakeup` turns the internal <<wakeup, wakeup>> flag on and requests <<client, KafkaClient>> to link:kafka-clients-KafkaClient.adoc#wakeup[wakeup]
+
+NOTE: `wakeup` is used when...FIXME
+
+=== [[ensureFreshMetadata]] Updating Cluster Metadata (and Possibly Blocking Until It Refreshes) -- `ensureFreshMetadata` Method
+
+[source, java]
+----
+void ensureFreshMetadata()
+----
+
+`ensureFreshMetadata` <<awaitMetadataUpdate, waits for metadata update>> when <<metadata, Metadata>> was requested for link:kafka-clients-Metadata.adoc#updateRequested[update] or link:kafka-clients-Metadata.adoc#timeToNextUpdate[time to the next update] is now.
+
+NOTE: `ensureFreshMetadata` is used when `ConsumerCoordinator` does link:kafka-consumer-internals-ConsumerCoordinator.adoc#onJoinComplete[onJoinComplete], link:kafka-consumer-internals-ConsumerCoordinator.adoc#performAssignment[performAssignment] and link:kafka-consumer-internals-ConsumerCoordinator.adoc#poll[poll].
+
+=== [[pendingRequestCount]] `pendingRequestCount` Method
+
+[source, java]
+----
+int pendingRequestCount()
+int pendingRequestCount(Node node)
+----
+
+`pendingRequestCount`...FIXME
+
+NOTE: `pendingRequestCount` is used when...FIXME
+
+=== [[leastLoadedNode]] Least-Loaded Kafka Node -- `leastLoadedNode` Method
+
+[source, java]
+----
+Node leastLoadedNode()
+----
+
+`leastLoadedNode`...FIXME
+
+[NOTE]
+====
+`leastLoadedNode` is used when:
+
+* `AbstractCoordinator` is requested to <<kafka-consumer-internals-AbstractCoordinator.adoc#lookupCoordinator, lookupCoordinator>>
+
+* `Fetcher` is requested to <<kafka-consumer-internals-Fetcher.adoc#sendMetadataRequest, sendMetadataRequest>>
+====
+
+=== [[poll]] `poll` Method
+
+[source, java]
+----
+void poll(
+  RequestFuture<?> future) // <1>
+boolean poll(
+  RequestFuture<?> future,
+  Timer timer)
+void poll(
+  Timer timer) // <2>
+void poll(
+  Timer timer,
+  PollCondition pollCondition) // <3>
+void poll(
+  Timer timer,
+  PollCondition pollCondition,
+  boolean disableWakeup)
+----
+<1> Used in tests (and uses a maximum timeout)
+<2> Uses uninitialized `PollCondition` (`null`)
+<3> Turns `disableWakeup` off (`false`)
+
+`poll`...FIXME
+
+[NOTE]
+====
+`poll` is used when:
+
+* `AbstractCoordinator` is requested to link:kafka-consumer-internals-AbstractCoordinator.adoc#ensureCoordinatorReady[ensureCoordinatorReady] and link:kafka-consumer-internals-AbstractCoordinator.adoc#joinGroupIfNeeded[joinGroupIfNeeded]
+
+* `ConsumerNetworkClient` is requested to <<pollNoWakeup, pollNoWakeup>>, <<awaitMetadataUpdate, awaitMetadataUpdate>>, and <<awaitPendingRequests, awaitPendingRequests>>
+
+* `Fetcher` is requested to link:kafka-consumer-internals-Fetcher.adoc#getTopicMetadata[getTopicMetadata] and link:kafka-consumer-internals-Fetcher.adoc#fetchOffsetsByTimes[fetchOffsetsByTimes]
+
+* `KafkaConsumer` is requested to link:kafka-consumer-KafkaConsumer.adoc#pollForFetches[pollForFetches] and link:kafka-consumer-KafkaConsumer.adoc#position[position]
+
+* `ConsumerCoordinator` is requested to link:kafka-consumer-internals-ConsumerCoordinator.adoc#close[close], link:kafka-consumer-internals-ConsumerCoordinator.adoc#fetchCommittedOffsets[fetchCommittedOffsets] and link:kafka-consumer-internals-ConsumerCoordinator.adoc#commitOffsetsSync[commitOffsetsSync]
+
+* `BrokerApiVersionsCommand` tool is executed (and creates a link:kafka-clients-admin-AdminClient.adoc#networkThread[AdminClient])
+
+* Kafka Connect's `WorkerCoordinator` is requested to `poll`
+====
+
+=== [[awaitMetadataUpdate]] Waiting for Metadata Update -- `awaitMetadataUpdate` Method
+
+[source, java]
+----
+boolean awaitMetadataUpdate(long timeout)
+----
+
+`awaitMetadataUpdate`...FIXME
+
+NOTE: `awaitMetadataUpdate` is used when...FIXME
+
+=== [[awaitPendingRequests]] `awaitPendingRequests` Method
+
+[source, java]
+----
+boolean awaitPendingRequests(Node node, Timer timer)
+----
+
+`awaitPendingRequests`...FIXME
+
+NOTE: `awaitPendingRequests` is used when...FIXME
+
+=== [[pollNoWakeup]] `pollNoWakeup` Method
+
+[source, java]
+----
+void pollNoWakeup()
+----
+
+`pollNoWakeup`...FIXME
+
+[NOTE]
+====
+`pollNoWakeup` is used when:
+
+* `KafkaConsumer` is requested to <<kafka-consumer-KafkaConsumer.adoc#poll, poll for records>>
+
+* `AbstractCoordinator` is requested to <<kafka-consumer-internals-AbstractCoordinator.adoc#maybeLeaveGroup, maybeLeaveGroup>>
+
+* `HeartbeatThread` is requested to <<kafka-consumer-internals-AbstractCoordinator-HeartbeatThread.adoc#run, run>>
+
+* `ConsumerCoordinator` is requested to <<kafka-consumer-internals-ConsumerCoordinator.adoc#commitOffsetsAsync, commitOffsetsAsync>>
+====
+
+=== [[creating-instance]] Creating ConsumerNetworkClient Instance
+
+`ConsumerNetworkClient` takes the following when created:
+
+* [[logContext]] `LogContext`
+* [[client]] link:kafka-clients-KafkaClient.adoc[KafkaClient]
+* [[metadata]] link:kafka-clients-Metadata.adoc[Metadata]
+* [[time]] `Time`
+* [[retryBackoffMs]] `retryBackoffMs`
+* [[requestTimeoutMs]] `requestTimeoutMs`
+
+`ConsumerNetworkClient` initializes the <<internal-registries, internal registries and counters>>.
+
+=== [[trySend]] `trySend` Internal Method
+
+[source, java]
+----
+long trySend(long now)
+----
+
+`trySend`...FIXME
+
+NOTE: `trySend` is used exclusively when `ConsumerNetworkClient` is requested to <<poll, poll>>.
+
+=== [[tryConnect]] Initiating Connector to Kafka Node -- `tryConnect` Method
+
+[source, java]
+----
+void tryConnect(Node node)
+----
+
+`tryConnect` simply requests the <<client, KafkaClient>> to <<kafka-clients-KafkaClient.adoc#ready, initiate a connection>> to the given broker https://kafka.apache.org/21/javadoc/org/apache/kafka/common/Node.html[Node].
+
+NOTE: `tryConnect` is used exclusively when `FindCoordinatorResponseHandler` is requested to <<kafka-consumer-internals-FindCoordinatorResponseHandler.adoc#onSuccess, onSuccess>>.
+
+=== [[handlePendingDisconnects]] `handlePendingDisconnects` Internal Method
+
+[source, java]
+----
+void handlePendingDisconnects()
+----
+
+`handlePendingDisconnects`...FIXME
+
+NOTE: `handlePendingDisconnects` is used exclusively when `ConsumerNetworkClient` is requested to <<poll, poll>>.
+
+=== [[maybeTriggerWakeup]] `maybeTriggerWakeup` Method
+
+[source, java]
+----
+void maybeTriggerWakeup()
+----
+
+`maybeTriggerWakeup`...FIXME
+
+NOTE: `maybeTriggerWakeup` is used when...FIXME
+
+=== [[transmitSends]] `transmitSends` Method
+
+[source, java]
+----
+void transmitSends()
+----
+
+`transmitSends`...FIXME
+
+NOTE: `transmitSends` is used when `KafkaConsumer` is requested to link:kafka-consumer-KafkaConsumer.adoc#poll[poll].
+
+=== [[internal-properties]] Internal Properties
+
+[cols="30m,70",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| pendingCompletion
+a| [[pendingCompletion]]
+
+| unsent
+a| [[unsent]] `UnsentRequests` with pending requests per node that have not been sent yet (i.e. awaiting transmission).
+
+|===

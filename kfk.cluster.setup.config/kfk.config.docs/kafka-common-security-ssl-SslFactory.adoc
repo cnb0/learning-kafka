@@ -1,0 +1,105 @@
+== [[SslFactory]] SslFactory
+
+`SslFactory` is <<creating-instance, created>> when:
+
+* `SaslChannelBuilder` is requested to link:kafka-common-network-SaslChannelBuilder.adoc#configure[configure] for SASL_SSL security protocol (with `none` for the <<clientAuthConfigOverride, clientAuthConfigOverride>> text)
+
+* `SslChannelBuilder` is requested to link:kafka-common-network-SslChannelBuilder.adoc#configure[configure] (with no <<clientAuthConfigOverride, clientAuthConfigOverride>> text)
+
+=== [[creating-instance]] Creating SslFactory Instance
+
+`SslFactory` takes the following to be created:
+
+* [[mode]] `Mode` (i.e. `CLIENT` or `SERVER`)
+* [[clientAuthConfigOverride]] `clientAuthConfigOverride` text
+* [[keystoreVerifiableUsingTruststore]] `keystoreVerifiableUsingTruststore` flag
+
+`SslFactory` initializes the <<internal-properties, internal properties>>.
+
+=== [[configure]] `configure` Method
+
+[source, java]
+----
+void configure(
+  Map<String, ?> configs)
+----
+
+NOTE: `configure` is part of the link:kafka-common-Configurable.adoc#configure[Configurable] contract to pass configurations.
+
+`configure` initializes the <<endpointIdentification, endpoint identification algorithm>> internal registry based on link:kafka-common-config-SslConfigs.adoc#ssl.endpoint.identification.algorithm[ssl.endpoint.identification.algorithm] configuration property.
+
+`configure`...FIXME
+
+=== [[validateReconfiguration]] `validateReconfiguration` Method
+
+[source, java]
+----
+void validateReconfiguration(
+  Map<String, ?> newConfigs)
+----
+
+NOTE: `validateReconfiguration` is part of the link:kafka-common-Reconfigurable.adoc#validateReconfiguration[Reconfigurable] to...FIXME.
+
+`validateReconfiguration`...FIXME
+
+=== [[reconfigure]] `reconfigure` Method
+
+[source, java]
+----
+void reconfigure(
+  Map<String, ?> newConfigs)
+----
+
+NOTE: `reconfigure` is part of the link:kafka-common-Reconfigurable.adoc#reconfigure[Reconfigurable] to...FIXME.
+
+`reconfigure`...FIXME
+
+=== [[createSslEngine]] `createSslEngine` Method
+
+[source, java]
+----
+SSLEngine createSslEngine(
+  String peerHost,
+  int peerPort)
+----
+
+`createSslEngine` simply requests the <<sslEngineBuilder, SslEngineBuilder>> to link:kafka-common-security-ssl-SslEngineBuilder.adoc#createSslEngine[createSslEngine] for the given `peerHost` and `peerPort` (and the <<mode, mode>> and the <<endpointIdentification, endpointIdentification>>).
+
+`createSslEngine` throws an `IllegalStateException` if the <<sslEngineBuilder, sslEngineBuilder>> hasn't been initialized yet (`null`):
+
+```
+SslFactory has not been configured.
+```
+
+NOTE: `createSslEngine` is used when link:kafka-common-network-SaslChannelBuilder.adoc#buildTransportLayer[SaslChannelBuilder] and link:kafka-common-network-SslChannelBuilder.adoc#buildTransportLayer[SslChannelBuilder] are requested to `buildTransportLayer`.
+
+=== [[createNewSslEngineBuilder]] `createNewSslEngineBuilder` Internal Method
+
+[source, java]
+----
+SslEngineBuilder createNewSslEngineBuilder(
+  Map<String, ?> newConfigs)
+----
+
+`createNewSslEngineBuilder`...FIXME
+
+NOTE: `createNewSslEngineBuilder` is used when `SslFactory` is requested to <<validateReconfiguration, validateReconfiguration>> and <<reconfigure, reconfigure>>.
+
+=== [[internal-properties]] Internal Properties
+
+[cols="30m,70",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| endpointIdentification
+a| [[endpointIdentification]] Name of the algorithm for endpoint identification (based on link:kafka-common-config-SslConfigs.adoc#ssl.endpoint.identification.algorithm[ssl.endpoint.identification.algorithm] configuration property)
+
+Used when `SslFactory` is requested for a <<createSslEngine, SSLEngine>>.
+
+| sslEngineBuilder
+a| [[sslEngineBuilder]] link:kafka-common-security-ssl-SslEngineBuilder.adoc[SslEngineBuilder] to <<createSslEngine, create a SSLEngine>> (for link:kafka-common-network-SaslChannelBuilder.adoc[SaslChannelBuilder] and link:kafka-common-network-SslChannelBuilder.adoc[SslChannelBuilder])
+
+Initialized when `SslFactory` is requested to <<configure, configure>> and then later when requested to <<reconfigure, reconfigure>> (with a new configuration)
+
+|===

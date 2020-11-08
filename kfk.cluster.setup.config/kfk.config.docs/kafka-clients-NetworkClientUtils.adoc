@@ -1,0 +1,46 @@
+== [[NetworkClientUtils]] NetworkClientUtils
+
+`NetworkClientUtils` is...FIXME
+
+=== [[sendAndReceive]] `sendAndReceive` Static Method
+
+[source, java]
+----
+ClientResponse sendAndReceive(
+  KafkaClient client
+  ClientRequest request
+  Time time) throws IOException
+----
+
+`sendAndReceive`...FIXME
+
+NOTE: `sendAndReceive` is used when...FIXME
+
+=== [[awaitReady]] Waiting Until Connection to Broker Node is Ready -- `awaitReady` Static Method
+
+[source, java]
+----
+boolean awaitReady(
+  KafkaClient client
+  Node node
+  Time time
+  long timeoutMs) throws IOException
+----
+
+`awaitReady`...FIXME
+
+NOTE: `awaitReady` is used when...FIXME
+
+=== [[isReady]] `isReady` Static Method
+
+[source, java]
+----
+boolean isReady(
+  KafkaClient client,
+  Node node,
+  long currentTime)
+----
+
+`isReady`...FIXME
+
+NOTE: `isReady` is used when...FIXME

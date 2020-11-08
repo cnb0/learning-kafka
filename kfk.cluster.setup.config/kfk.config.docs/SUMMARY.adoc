@@ -1,0 +1,491 @@
+= Summary
+
+. link:book-intro.adoc[Introduction]
+. link:kafka-overview.adoc[Overview of Kafka]
+
+=== Kafka Features
+
+. link:kafka-partition-leader-election.adoc[Partition Leader Election]
+.. link:kafka-feature-preferred-replica-leader-election.adoc[Preferred Replica Election]
+.. link:kafka-demo-using-kafka-leader-election.adoc[Demo: Using kafka-leader-election.sh]
+. link:kafka-log-cleanup-policies.adoc[Log Cleanup Policies]
+. link:kafka-feature-controller-election.adoc[Kafka Controller Election]
+. link:kafka-topic-replication.adoc[Topic Replication]
+. link:kafka-topic-deletion.adoc[Topic Deletion]
+. link:kafka-transactional-producer.adoc[Transactional Producer]
+. link:kafka-idempotent-producer.adoc[Idempotent Producer]
+. link:kafka-log.adoc[Log Management System]
+
+=== Kafka Cluster
+
+. link:kafka-cluster-Broker.adoc[Broker]
+. link:kafka-cluster-EndPoint.adoc[EndPoint]
+
+. link:kafka-cluster-Partition.adoc[Partition]
+. link:kafka-cluster-Replica.adoc[Replica]
+
+. link:kafka-cluster-PartitionStateStore.adoc[PartitionStateStore]
+.. link:kafka-cluster-ZkPartitionStateStore.adoc[ZkPartitionStateStore]
+
+. link:kafka-utils-ReplicationUtils.adoc[ReplicationUtils]
+. link:kafka-utils-CoreUtils.adoc[CoreUtils]
+
+=== Kafka Security / Transport Layer Security (TLS) and Secure Sockets Layer (SSL)
+
+. link:kafka-security-tls-ssl.adoc[Kafka Security / Communications Security]
+.. link:kafka-demo-securing-communication-between-clients-and-brokers.adoc[Demo: Securing Communication Between Clients and Brokers Using SSL]
+
+. link:kafka-common-security-ssl-SslFactory.adoc[SslFactory]
+. link:kafka-common-security-ssl-SslEngineBuilder.adoc[SslEngineBuilder]
+. link:kafka-common-security-ssl-SslPrincipalMapper.adoc[SslPrincipalMapper]
+
+. link:kafka-common-config-SslConfigs.adoc[SslConfigs]
+. link:kafka-common-config-internals-BrokerSecurityConfigs.adoc[BrokerSecurityConfigs]
+
+=== Kafka Security / SSL Authentication and Authorization
+
+. link:kafka-security-ssl-authentication-and-authorization.adoc[SSL Authentication and Authorization]
+.. link:kafka-demo-secure-inter-broker-communication.adoc[Demo: Secure Inter-Broker Communication]
+.. link:kafka-demo-ssl-authentication.adoc[Demo: SSL Authentication]
+.. link:kafka-demo-acl-authorization.adoc[Demo: ACL Authorization]
+
+. link:kafka-server-authorizer-Authorizer.adoc[Authorizer]
+.. link:kafka-security-authorizer-AclAuthorizer.adoc[AclAuthorizer]
+.. link:kafka-security-authorizer-AuthorizerWrapper.adoc[AuthorizerWrapper]
+. link:kafka-common-security-auth-KafkaPrincipal.adoc[KafkaPrincipal]
+. link:kafka-common-security-auth-KafkaPrincipalBuilder.adoc[KafkaPrincipalBuilder]
+
+. link:kafka-common-security-authenticator-DefaultKafkaPrincipalBuilder.adoc[DefaultKafkaPrincipalBuilder]
+
+=== Kafka Networking Layer
+
+. link:kafka-common-network-ChannelBuilder.adoc[ChannelBuilder]
+.. link:kafka-common-network-SaslChannelBuilder.adoc[SaslChannelBuilder]
+.. link:kafka-common-network-SslChannelBuilder.adoc[SslChannelBuilder]
+... link:kafka-common-network-SslChannelBuilder-SslAuthenticator.adoc[SslAuthenticator]
+. link:kafka-common-network-ChannelBuilders.adoc[ChannelBuilders]
+
+. link:kafka-common-network-Authenticator.adoc[Authenticator]
+
+. link:kafka-common-network-KafkaChannel.adoc[KafkaChannel]
+
+. link:kafka-common-network-Selectable.adoc[Selectable]
+.. link:kafka-common-network-Selector.adoc[Selector]
+
+=== Kafka Tools (Utilities)
+
+. link:kafka-tools.adoc[Kafka Tools]
+. link:kafka-tools-kafka-configs.adoc[kafka-configs.sh]
+. link:kafka-tools-kafka-topics.adoc[kafka-topics.sh]
+
+. link:kafka-tools-kafka-leader-election.adoc[kafka-leader-election.sh]
+.. link:kafka-admin-LeaderElectionCommand.adoc[LeaderElectionCommand]
+
+. link:kafka-tools-kafka-acls.adoc[kafka-acls.sh]
+.. link:kafka-admin-AclCommand.adoc[AclCommand]
+... link:kafka-admin-AclCommand-JAuthorizerService.adoc[JAuthorizerService]
+.. link:kafka-admin-AclCommandService.adoc[AclCommandService]
+.. link:kafka-admin-AdminClientService.adoc[AdminClientService]
+
+. link:kafka-tools-kafka-consumer-groups.adoc[kafka-consumer-groups.sh]
+.. link:kafka-admin-ConsumerGroupCommand.adoc[ConsumerGroupCommand]
+.. link:kafka-admin-ConsumerGroupService.adoc[ConsumerGroupService]
+
+. link:kafka-admin-BrokerApiVersionsCommand.adoc[BrokerApiVersionsCommand]
+
+. link:kafka-tools-JmxTool.adoc[JmxTool]
+. link:kafka-tools-GetOffsetShell.adoc[GetOffsetShell]
+
+. link:kafka-tools-ReplicaVerificationTool.adoc[ReplicaVerificationTool]
+
+. link:kafka-tools-kafka-dump-log.adoc[kafka-dump-log.sh]
+.. link:kafka-tools-DumpLogSegments.adoc[DumpLogSegments]
+.. link:kafka-tools-DumpLogSegments-OffsetsMessageParser.adoc[OffsetsMessageParser]
+.. link:kafka-tools-DumpLogSegments-TransactionLogMessageParser.adoc[TransactionLogMessageParser]
+
+. link:kafka-admin-ConfigCommand.adoc[ConfigCommand]
+. link:kafka-admin-ReassignPartitionsCommand.adoc[ReassignPartitionsCommand -- Partition Reassignment on Command Line]
+. link:kafka-admin-TopicCommand.adoc[TopicCommand -- Topic Management on Command Line]
+
+. link:kafka-clients-admin-KafkaAdminClient.adoc[KafkaAdminClient]
+.. link:kafka-clients-admin-AdminClient.adoc[AdminClient]
+.. link:kafka-clients-admin-internals-AdminMetadataManager.adoc[AdminMetadataManager]
+.. link:kafka-clients-admin-KafkaAdminClient-AdminClientRunnable.adoc[AdminClientRunnable]
+.. link:kafka-clients-admin-Admin.adoc[Admin]
+
+. link:kafka-admin-AdminUtils.adoc[AdminUtils]
+
+=== Controller Broker
+
+. link:kafka-controller.adoc[Controller Broker]
+
+. link:kafka-controller-KafkaController.adoc[KafkaController]
+. link:kafka-controller-StateChangeLogger.adoc[StateChangeLogger]
+
+. link:kafka-controller-ControllerContext.adoc[ControllerContext]
+. link:kafka-controller-ControllerState.adoc[ControllerState]
+
+. link:kafka-controller-PartitionStateMachine.adoc[PartitionStateMachine]
+.. link:kafka-controller-ZkPartitionStateMachine.adoc[ZkPartitionStateMachine]
+... link:kafka-controller-Election.adoc[Election]
+... link:kafka-controller-PartitionLeaderElectionAlgorithms.adoc[PartitionLeaderElectionAlgorithms]
+
+. link:kafka-controller-ReplicaStateMachine.adoc[ReplicaStateMachine]
+.. link:kafka-controller-ZkReplicaStateMachine.adoc[ZkReplicaStateMachine]
+
+. link:kafka-controller-ControllerEventManager.adoc[ControllerEventManager]
+.. link:kafka-controller-ControllerEventThread.adoc[ControllerEventThread]
+.. link:kafka-controller-QueuedEvent.adoc[QueuedEvent]
+
+. link:kafka-controller-ControllerEventProcessor.adoc[ControllerEventProcessor]
+
+. link:kafka-controller-ControllerEvent.adoc[ControllerEvent]
+.. link:kafka-controller-ControllerEvent-AutoPreferredReplicaLeaderElection.adoc[AutoPreferredReplicaLeaderElection]
+.. link:kafka-controller-ControllerEvent-BrokerChange.adoc[BrokerChange]
+.. link:kafka-controller-ControllerEvent-LeaderAndIsrResponseReceived.adoc[LeaderAndIsrResponseReceived]
+.. link:kafka-controller-ControllerEvent-PreferredReplicaLeaderElection.adoc[PreferredReplicaLeaderElection]
+.. link:kafka-controller-ControllerEvent-Reelect.adoc[Reelect]
+.. link:kafka-controller-ControllerEvent-Startup.adoc[Startup]
+.. link:kafka-controller-ControllerEvent-TopicDeletion.adoc[TopicDeletion]
+.. link:kafka-controller-ControllerEvent-TopicUncleanLeaderElectionEnable.adoc[TopicUncleanLeaderElectionEnable]
+.. link:kafka-controller-ControllerEvent-UncleanLeaderElectionEnable.adoc[UncleanLeaderElectionEnable]
+
+. link:kafka-controller-ControllerChannelManager.adoc[ControllerChannelManager]
+.. link:kafka-controller-RequestSendThread.adoc[RequestSendThread]
+
+. link:kafka-controller-ControllerBrokerRequestBatch.adoc[ControllerBrokerRequestBatch]
+.. link:kafka-controller-AbstractControllerBrokerRequestBatch.adoc[AbstractControllerBrokerRequestBatch]
+
+. link:kafka-controller-TopicDeletionManager.adoc[TopicDeletionManager]
+
+. link:kafka-controller-AbstractControlRequest.adoc[AbstractControlRequest]
+.. link:kafka-common-requests-LeaderAndIsrRequest.adoc[LeaderAndIsrRequest]
+.. link:kafka-common-requests-StopReplicaRequest.adoc[StopReplicaRequest]
+.. link:kafka-common-requests-UpdateMetadataRequest.adoc[UpdateMetadataRequest]
+
+=== Kafka Clients / Producer API
+
+. link:kafka-producer-KafkaProducer.adoc[KafkaProducer]
+.. link:kafka-producer-Producer.adoc[Producer]
+
+. link:kafka-producer-ProducerConfig.adoc[ProducerConfig]
+
+. link:kafka-producer-ProducerRecord.adoc[ProducerRecord]
+. link:kafka-producer-Callback.adoc[Callback]
+
+. link:kafka-producer-Partitioner.adoc[Partitioner]
+
+. link:kafka-producer-ProducerInterceptor.adoc[ProducerInterceptor]
+
+==== Internals of Kafka Producer
+
+. link:kafka-producer-internals-Sender.adoc[Sender]
+. link:kafka-producer-internals-RecordAccumulator.adoc[RecordAccumulator]
+.. link:kafka-producer-internals-ProducerBatch.adoc[ProducerBatch]
+. link:kafka-producer-internals-ProducerInterceptors.adoc[ProducerInterceptors]
+. link:kafka-producer-internals-DefaultPartitioner.adoc[DefaultPartitioner]
+
+. link:kafka-producer-internals-TransactionManager.adoc[TransactionManager]
+
+=== Kafka Broker Services
+
+. link:kafka-server-KafkaServer.adoc[KafkaServer -- Kafka Broker]
+
+. link:kafka-server-scheduled-tasks.adoc[Kafka Server and Periodic Tasks]
+
+. link:kafka-server-AdminManager.adoc[AdminManager]
+
+. link:kafka-server-DelegationTokenManager.adoc[DelegationTokenManager]
+
+. link:kafka-server-DynamicConfigManager.adoc[DynamicConfigManager]
+.. link:kafka-server-ConfigHandler.adoc[ConfigHandler]
+.. link:kafka-server-BrokerConfigHandler.adoc[BrokerConfigHandler]
+.. link:kafka-server-ClientIdConfigHandler.adoc[ClientIdConfigHandler]
+.. link:kafka-server-TopicConfigHandler.adoc[TopicConfigHandler]
+.. link:kafka-server-UserConfigHandler.adoc[UserConfigHandler]
+
+. link:kafka-server-DynamicBrokerConfig.adoc[DynamicBrokerConfig]
+.. link:kafka-server-BrokerReconfigurable.adoc[BrokerReconfigurable]
+... link:kafka-server-DynamicConnectionQuota.adoc[DynamicConnectionQuota]
+... link:kafka-server-DynamicListenerConfig.adoc[DynamicListenerConfig]
+... link:kafka-server-DynamicThreadPool.adoc[DynamicThreadPool]
+.. link:kafka-server-DynamicClientQuotaCallback.adoc[DynamicClientQuotaCallback]
+.. link:kafka-server-DynamicLogConfig.adoc[DynamicLogConfig]
+.. link:kafka-server-DynamicMetricsReporters.adoc[DynamicMetricsReporters]
+
+. link:kafka-server-FetchManager.adoc[FetchManager]
+
+. link:kafka-coordinator-group-GroupCoordinator.adoc[GroupCoordinator]
+.. link:kafka-coordinator-group-GroupMetadataManager.adoc[GroupMetadataManager]
+.. link:kafka-coordinator-group-GroupMetadata.adoc[GroupMetadata]
+
+. link:kafka-Kafka.adoc[Kafka]
+. link:kafka-server-KafkaApis.adoc[KafkaApis]
+
+. link:kafka-KafkaHealthcheck.adoc[KafkaHealthcheck]
+. link:kafka-KafkaServerStartable.adoc[KafkaServerStartable]
+
+. link:kafka-server-KafkaConfig.adoc[KafkaConfig]
+
+. link:kafka-KafkaMetricsReporter.adoc[KafkaMetricsReporter]
+
+. link:kafka-server-KafkaRequestHandlerPool.adoc[KafkaRequestHandlerPool]
+.. link:kafka-server-KafkaRequestHandler.adoc[KafkaRequestHandler]
+
+. link:kafka-log-LogManager.adoc[LogManager]
+.. link:kafka-log-Log.adoc[Log]
+.. link:kafka-log-LogSegment.adoc[LogSegment]
+.. link:kafka-log-LogCleanerManager.adoc[LogCleanerManager]
+.. link:kafka-log-LogCleaner.adoc[LogCleaner]
+... link:kafka-log-CleanerConfig.adoc[CleanerConfig]
+... link:kafka-log-CleanerThread.adoc[CleanerThread]
+... link:kafka-log-Cleaner.adoc[Cleaner]
+... link:kafka-log-CleanedTransactionMetadata.adoc[CleanedTransactionMetadata]
+.. link:kafka-log-ProducerStateManager.adoc[ProducerStateManager]
+.. link:kafka-log-LogConfig.adoc[LogConfig]
+.. link:kafka-log-RollParams.adoc[RollParams]
+
+.. link:kafka-log-AbstractIndex.adoc[AbstractIndex]
+... link:kafka-log-OffsetIndex.adoc[OffsetIndex]
+... link:kafka-log-TimeIndex.adoc[TimeIndex]
+.. link:kafka-log-TransactionIndex.adoc[TransactionIndex]
+.. link:kafka-log-LazyIndex.adoc[LazyIndex]
+
+. link:kafka-server-MetadataCache.adoc[MetadataCache]
+
+. link:kafka-OffsetConfig.adoc[OffsetConfig]
+
+. link:kafka-server-ReplicaManager.adoc[ReplicaManager]
+.. link:kafka-server-ReplicaFetcherManager.adoc[ReplicaFetcherManager]
+... link:kafka-server-ReplicaFetcherThread.adoc[ReplicaFetcherThread]
+.. link:kafka-server-ReplicaAlterLogDirsManager.adoc[ReplicaAlterLogDirsManager]
+... link:kafka-server-ReplicaAlterLogDirsThread.adoc[ReplicaAlterLogDirsThread]
+.. link:kafka-server-AbstractFetcherManager.adoc[AbstractFetcherManager]
+... link:kafka-server-AbstractFetcherThread.adoc[AbstractFetcherThread]
+.. link:kafka-server-ReplicaFetcherBlockingSend.adoc[ReplicaFetcherBlockingSend]
+.. link:kafka-server-ReplicationQuotaManager.adoc[ReplicationQuotaManager]
+.. link:kafka-server-ReplicaManager-LogDirFailureHandler.adoc[LogDirFailureHandler]
+
+. link:kafka-ShutdownableThread.adoc[ShutdownableThread]
+. link:kafka-network-SocketServer.adoc[SocketServer]
+.. link:kafka-network-SocketServer-Processor.adoc[Network Processor Thread]
+. link:kafka-network-RequestChannel.adoc[RequestChannel]
+.. link:kafka-network-RequestChannel-Request.adoc[RequestChannel.Request]
+
+. link:kafka-TransactionCoordinator.adoc[TransactionCoordinator]
+.. link:kafka-TransactionMarkerChannelManager.adoc[TransactionMarkerChannelManager]
+.. link:kafka-InterBrokerSendThread.adoc[InterBrokerSendThread]
+. link:kafka-TransactionStateManager.adoc[TransactionStateManager]
+
+. link:kafka-server-QuotaManagers.adoc[QuotaManagers]
+
+. link:kafka-ZkUtils.adoc[ZkUtils]
+. link:kafka-ZKRebalancerListener.adoc[ZKRebalancerListener]
+
+=== Kafka Performance Metrics
+
+. link:kafka-metrics-KafkaMetricsGroup.adoc[KafkaMetricsGroup]
+. link:kafka-server-BrokerTopicStats.adoc[BrokerTopicStats]
+. link:kafka-server-BrokerTopicMetrics.adoc[BrokerTopicMetrics]
+
+=== Kafka Clients / Consumer API
+
+. link:kafka-consumer-Consumer.adoc[Consumer Contract -- Kafka Clients for Consuming Records]
+.. link:kafka-consumer-KafkaConsumer.adoc[KafkaConsumer]
+.. link:kafka-consumer-MockConsumer.adoc[MockConsumer]
+
+. link:kafka-consumer-ConsumerRecord.adoc[ConsumerRecord]
+. link:kafka-consumer-OffsetAndMetadata.adoc[OffsetAndMetadata]
+. link:kafka-consumer-OffsetAndTimestamp.adoc[OffsetAndTimestamp]
+. link:kafka-consumer-OffsetCommitCallback.adoc[OffsetCommitCallback]
+. link:kafka-consumer-ConsumerRebalanceListener.adoc[ConsumerRebalanceListener]
+
+. link:kafka-consumer-ConsumerConfig.adoc[ConsumerConfig -- Configuration Properties for KafkaConsumer]
+
+. link:kafka-consumer-CommitFailedException.adoc[CommitFailedException]
+. link:kafka-consumer-InvalidOffsetException.adoc[InvalidOffsetException]
+. link:kafka-consumer-NoOffsetForPartitionException.adoc[NoOffsetForPartitionException]
+. link:kafka-consumer-OffsetOutOfRangeException.adoc[OffsetOutOfRangeException]
+. link:kafka-consumer-RetriableCommitFailedException.adoc[RetriableCommitFailedException]
+
+. link:kafka-consumer-ConsumerInterceptor.adoc[ConsumerInterceptor]
+
+. link:kafka-consumer-internals-PartitionAssignor.adoc[PartitionAssignor Contract]
+.. link:kafka-consumer-RangeAssignor.adoc[RangeAssignor]
+.. link:kafka-consumer-RoundRobinAssignor.adoc[RoundRobinAssignor]
+.. link:kafka-consumer-StickyAssignor.adoc[StickyAssignor]
+.. link:kafka-consumer-internals-AbstractPartitionAssignor.adoc[AbstractPartitionAssignor]
+
+. link:kafka-consumer-internals-ConsumerCoordinator.adoc[ConsumerCoordinator]
+.. link:kafka-consumer-internals-AbstractCoordinator.adoc[AbstractCoordinator Contract]
+.. link:kafka-consumer-internals-AbstractCoordinator-HeartbeatThread.adoc[HeartbeatThread]
+.. link:kafka-consumer-internals-AbstractCoordinator-GroupCoordinatorMetrics.adoc[GroupCoordinatorMetrics]
+
+. link:kafka-consumer-internals-ConsumerNetworkClient.adoc[ConsumerNetworkClient]
+. link:kafka-consumer-internals-ConsumerMetrics.adoc[ConsumerMetrics]
+. link:kafka-consumer-internals-Fetcher.adoc[Fetcher]
+. link:kafka-consumer-internals-RequestFutureListener.adoc[RequestFutureListener]
+. link:kafka-consumer-internals-SubscriptionState.adoc[SubscriptionState]
+
+. link:kafka-consumer-internals-RequestFuture.adoc[RequestFuture]
+. link:kafka-consumer-internals-RequestFutureAdapter.adoc[RequestFutureAdapter Contract]
+.. link:kafka-consumer-internals-CoordinatorResponseHandler.adoc[CoordinatorResponseHandler Contract]
+.. link:kafka-consumer-internals-FindCoordinatorResponseHandler.adoc[FindCoordinatorResponseHandler]
+.. link:kafka-consumer-internals-HeartbeatResponseHandler.adoc[HeartbeatResponseHandler]
+.. link:kafka-consumer-internals-JoinGroupResponseHandler.adoc[JoinGroupResponseHandler]
+.. link:kafka-consumer-internals-OffsetCommitResponseHandler.adoc[OffsetCommitResponseHandler]
+.. link:kafka-consumer-internals-SyncGroupResponseHandler.adoc[SyncGroupResponseHandler]
+
+=== Kafka Architecture
+
+. link:kafka-brokers.adoc[Broker Nodes -- Kafka Servers]
+
+. link:kafka-topics.adoc[Topics]
+. link:kafka-messages.adoc[Messages]
+
+. link:kafka-clients.adoc[Kafka Clients]
+.. link:kafka-producers.adoc[Producers]
+.. link:kafka-consumers.adoc[Consumers]
+
+. link:kafka-clusters.adoc[Clusters]
+
+=== Kafka Monitoring (Metrics)
+
+. link:kafka-Metrics.adoc[Metrics]
+
+. link:kafka-Sensor.adoc[Sensor]
+. link:kafka-MetricsReporter.adoc[MetricsReporter]
+. link:kafka-ProducerMetrics.adoc[ProducerMetrics]
+. link:kafka-producer-internals-SenderMetrics.adoc[SenderMetrics]
+
+=== Kafka Configuration
+
+. link:kafka-properties.adoc[Properties]
+.. link:kafka-properties-bootstrap-servers.adoc[bootstrap.servers]
+.. link:kafka-properties-client-id.adoc[client.id]
+.. link:kafka-properties-enable-auto-commit.adoc[enable.auto.commit]
+.. link:kafka-properties-group-id.adoc[group.id]
+.. link:kafka-properties-retry-backoff-ms.adoc[retry.backoff.ms]
+. link:kafka-logging.adoc[Logging]
+
+=== Tips and Tricks
+
+. link:kafka-gradle-tips.adoc[Gradle Tips]
+. link:kafka-zookeeper-tips.adoc[Zookeeper Tips]
+. link:kafka-scala-repl.adoc[Kafka in Scala REPL for Interactive Exploration]
+. link:kafka-docker.adoc[Running Kafka Broker in Docker]
+
+=== Kafka Clients
+
+. link:kafka-clients-KafkaClient.adoc[KafkaClient]
+.. link:kafka-clients-NetworkClient.adoc[NetworkClient -- Non-Blocking Network KafkaClient]
+
+. link:kafka-clients-RequestCompletionHandler.adoc[RequestCompletionHandler Contract]
+
+. link:kafka-clients-MetadataUpdater.adoc[MetadataUpdater]
+.. link:kafka-clients-DefaultMetadataUpdater.adoc[DefaultMetadataUpdater]
+
+. link:kafka-clients-Metadata.adoc[Metadata]
+.. link:kafka-clients-Metadata-Listener.adoc[Listener Contract -- Intercepting Metadata Updates]
+
+. link:kafka-clients-ClientRequest.adoc[ClientRequest]
+. link:kafka-clients-ClientResponse.adoc[ClientResponse]
+
+. link:kafka-clients-StaleMetadataException.adoc[StaleMetadataException]
+
+. link:kafka-clients-NetworkClientUtils.adoc[NetworkClientUtils]
+
+. link:kafka-clients-CommonClientConfigs.adoc[CommonClientConfigs]
+
+. link:kafka-clients-ClientUtils.adoc[ClientUtils]
+
+=== Kafka Common
+
+. link:kafka-common-Cluster.adoc[Cluster]
+.. link:kafka-Cluster-deprecated.adoc[Cluster (deprecated)]
+. link:kafka-ClusterConnectionStates.adoc[ClusterConnectionStates]
+. link:kafka-ClusterResourceListener.adoc[ClusterResourceListener (and ClusterResourceListeners Collection)]
+
+. link:kafka-common-TopicConfig.adoc[TopicConfig]
+
+. link:kafka-common-NotificationHandler.adoc[NotificationHandler Contract]
+. link:kafka-common-ZkNodeChangeNotificationListener.adoc[ZkNodeChangeNotificationListener]
+
+. link:kafka-common-Configurable.adoc[Configurable Contract]
+. link:kafka-common-Reconfigurable.adoc[Reconfigurable]
+
+. link:kafka-common-record-MemoryRecordsBuilder.adoc[MemoryRecordsBuilder]
+
+. link:kafka-common-record-Records.adoc[Records]
+.. link:kafka-common-record-FileRecords.adoc[FileRecords]
+.. link:kafka-common-record-MemoryRecords.adoc[MemoryRecords]
+.. link:kafka-common-record-AbstractRecords.adoc[AbstractRecords]
+.. link:kafka-common-record-BaseRecords.adoc[BaseRecords]
+
+=== Kafka Common / Requests
+
+. link:kafka-common-requests-AbstractRequestResponse.adoc[AbstractRequestResponse Contract]
+.. link:kafka-common-requests-AbstractRequest.adoc[AbstractRequest Contract]
+.. link:kafka-common-requests-AbstractRequest-Builder.adoc[AbstractRequest.Builder Contract]
+.. link:kafka-common-requests-AbstractResponse.adoc[AbstractResponse]
+
+. link:kafka-common-requests-DescribeLogDirsRequest.adoc[DescribeLogDirsRequest]
+
+. link:kafka-common-requests-DescribeConfigsRequest.adoc[DescribeConfigsRequest]
+
+. link:kafka-common-requests-ElectPreferredLeadersRequest.adoc[ElectPreferredLeadersRequest]
+
+. link:kafka-common-requests-FetchRequest.adoc[FetchRequest]
+
+. link:kafka-common-requests-FindCoordinatorRequest.adoc[FindCoordinatorRequest]
+. link:kafka-common-requests-FindCoordinatorResponse.adoc[FindCoordinatorResponse]
+
+. link:kafka-common-requests-HeartbeatRequest.adoc[HeartbeatRequest]
+
+. link:kafka-common-requests-JoinGroupRequest.adoc[JoinGroupRequest]
+. link:kafka-common-requests-JoinGroupResponse.adoc[JoinGroupResponse]
+
+. link:kafka-common-requests-MetadataRequest.adoc[MetadataRequest]
+. link:kafka-common-requests-MetadataResponse.adoc[MetadataResponse]
+
+. link:kafka-common-requests-OffsetCommitRequest.adoc[OffsetCommitRequest]
+
+. link:kafka-common-requests-ProduceRequest.adoc[ProduceRequest]
+
+. link:kafka-common-requests-SyncGroupRequest.adoc[SyncGroupRequest]
+
+. link:kafka-common-requests-RequestContext.adoc[RequestContext]
+
+=== Kafka Common / Serialization
+
+. link:kafka-common-serialization-Serializer.adoc[Serializer Contract]
+. link:kafka-common-serialization-Deserializer.adoc[Deserializer Contract]
+. link:kafka-common-serialization-Serde.adoc[Serde Contract]
+
+. link:kafka-common-serialization-Serdes.adoc[Serdes Factory Object]
+
+=== Varia / Misc
+
+. link:kafka-KafkaScheduler.adoc[KafkaScheduler]
+. link:kafka-Scheduler.adoc[Scheduler]
+
+=== Zookeeper
+
+. link:kafka-ZooKeeperClient.adoc[ZooKeeperClient]
+. link:kafka-zk-KafkaZkClient.adoc[KafkaZkClient]
+. link:kafka-zk-AdminZkClient.adoc[AdminZkClient]
+. link:kafka-zk-ZkAclChangeStore.adoc[ZkAclChangeStore]
+. link:kafka-zk-BrokerIdZNode.adoc[BrokerIdZNode]
+
+=== Kafka Connect
+
+. link:kafka-WorkerGroupMember.adoc[WorkerGroupMember]
+. link:kafka-ConnectDistributed.adoc[ConnectDistributed]
+
+=== Kafka Demos
+
+. link:kafka-demo-controller-election.adoc[Demo: Kafka Controller Election]
+
+=== Appendix
+
+. link:kafka-further-reading-watching.adoc[Further reading or watching]

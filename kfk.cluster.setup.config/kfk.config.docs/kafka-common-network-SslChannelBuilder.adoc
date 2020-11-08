@@ -1,0 +1,87 @@
+== [[SslChannelBuilder]] SslChannelBuilder
+
+`SslChannelBuilder` is a link:kafka-common-network-ChannelBuilder.adoc[ChannelBuilder] for Kafka clients and brokers when link:kafka-clients-CommonClientConfigs.adoc#security.protocol[security.protocol] configuration property is `SSL`.
+
+`SslChannelBuilder` is a `ListenerReconfigurable`.
+
+`SslChannelBuilder` is <<creating-instance, created>> when `ChannelBuilders` utility is used to link:kafka-common-network-ChannelBuilders.adoc#create[create a ChannelBuilder] for SSL security protocol.
+
+=== [[creating-instance]] Creating SslChannelBuilder Instance
+
+`SslChannelBuilder` takes the following to be created:
+
+* [[mode]] `Mode` (i.e. `CLIENT` or `SERVER`)
+* [[listenerName]] Listener name (only for `SERVER` channel builder)
+* [[isInterBrokerListener]] `isInterBrokerListener` flag
+
+`SslChannelBuilder` initializes the <<internal-properties, internal properties>>.
+
+=== [[sslPrincipalMapper]] SslChannelBuilder and SslPrincipalMapper
+
+[source, scala]
+----
+SslPrincipalMapper sslPrincipalMapper
+----
+
+`sslPrincipalMapper` is a link:kafka-common-security-ssl-SslPrincipalMapper.adoc[SslPrincipalMapper] that is used to create a link:kafka-common-network-SslChannelBuilder-SslAuthenticator.adoc[SslAuthenticator] when `SslChannelBuilder` is requested to <<buildChannel, build a channel>>.
+
+`sslPrincipalMapper` is created based on link:kafka-common-security-ssl-SslPrincipalMapper.adoc#fromRules[SSL principal mapping rules] when `SslChannelBuilder` is requested to <<configure, configure>> with link:kafka-properties.adoc#ssl.principal.mapping.rules[ssl.principal.mapping.rules] configuration property defined.
+
+=== [[buildChannel]] Creating KafkaChannel -- `buildChannel` Method
+
+[source, java]
+----
+KafkaChannel buildChannel(
+  String id,
+  SelectionKey key,
+  int maxReceiveSize,
+  MemoryPool memoryPool)
+----
+
+NOTE: `buildChannel` is part of the link:kafka-common-network-ChannelBuilder.adoc#buildChannel[ChannelBuilder] contract to build a `KafkaChannel`.
+
+`buildChannel`...FIXME
+
+=== [[configure]] `configure` Method
+
+[source, java]
+----
+void configure(
+  Map<String, ?> configs)
+----
+
+NOTE: `configure` is part of the link:kafka-common-Configurable.adoc#configure[Configurable] contract to pass configurations.
+
+`configure` initializes the <<sslPrincipalMapper, sslPrincipalMapper>> internal registry (using link:kafka-common-security-ssl-SslPrincipalMapper.adoc#fromRules[SslPrincipalMapper] utility) if link:kafka-properties.adoc#ssl.principal.mapping.rules[ssl.principal.mapping.rules] configuration property is defined.
+
+`configure` creates a <<sslFactory, SslFactory>> (for the <<mode, mode>> and the <<isInterBrokerListener, isInterBrokerListener>> flag) and requests it to link:kafka-common-security-ssl-SslFactory.adoc#configure[configure] (with the given `configs`).
+
+=== [[buildTransportLayer]] `buildTransportLayer` Method
+
+[source, java]
+----
+SslTransportLayer buildTransportLayer(
+  SslFactory sslFactory,
+  String id,
+  SelectionKey key,
+  String host)
+----
+
+`buildTransportLayer`...FIXME
+
+NOTE: `buildTransportLayer` is used when `SslChannelBuilder` is requested to <<buildChannel, buildChannel>>.
+
+=== [[internal-properties]] Internal Properties
+
+[cols="30m,70",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| configs
+a| [[configs]] Configuration properties
+
+| sslFactory
+a| [[sslFactory]] link:kafka-common-security-ssl-SslFactory.adoc[SslFactory]
+
+|===

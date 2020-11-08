@@ -1,0 +1,960 @@
+== Kafka Properties
+
+[[properties]]
+.Properties
+[cols="1m,2",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| advertised.listeners
+a| [[advertised.listeners]] Comma-separated list of URIs to publish to ZooKeeper for clients to use, if different than the <<listeners, listeners>> config property.
+
+Default: `null`
+
+In IaaS environments (e.g. Docker, Kubernetes, a cloud), `advertised.listeners` may need to be different from the interface to which a Kafka broker binds. That ensures that the Kafka broker advertises an address that is accessible from both local and external hosts. If not set, the value for <<listeners, listeners>> is used.
+
+Unlike <<listeners, listeners>> it is invalid to advertise the `0.0.0.0` non-routable meta-address.
+
+* Use <<kafka-server-KafkaConfig.adoc#AdvertisedListenersProp, KafkaConfig.AdvertisedListenersProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#advertisedListeners, KafkaConfig.advertisedListeners>> to access the current value
+
+<<kafka-server-DynamicListenerConfig.adoc#, Dynamic reconfigurable configuration>>
+
+| authorizer.class.name
+a| [[authorizer.class.name]] Fully-qualified class name of the link:kafka-server-authorizer-Authorizer.adoc[Authorizer] for link:kafka-server-KafkaApis.adoc#authorize[request authorization]
+
+Default: (empty)
+
+Supports authorizers that implement the deprecated `kafka.security.auth.Authorizer` trait which was previously used for authorization before Kafka 2.4.0 (link:++https://cwiki.apache.org/confluence/display/KAFKA/KIP-504+-+Add+new+Java+Authorizer+Interface++[KIP-504 - Add new Java Authorizer Interface]).
+
+* Use <<kafka-server-KafkaConfig.adoc#AuthorizerClassNameProp, KafkaConfig.AuthorizerClassNameProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#authorizerClassName, KafkaConfig.authorizerClassName>> to access the current value
+
+| auto.commit.interval.ms
+a| [[auto.commit.interval.ms]] How often (in milliseconds) consumer offsets should be auto-committed when <<enable.auto.commit, enable.auto.commit>> is enabled
+
+| auto.create.topics.enable
+a| [[auto.create.topics.enable]] Enables auto creation of a topic
+
+Default: `true`
+
+* Use `KafkaConfig.AutoCreateTopicsEnableProp` to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#autoCreateTopicsEnable, KafkaConfig.autoCreateTopicsEnable>> to access the current value
+
+| auto.leader.rebalance.enable
+a| [[auto.leader.rebalance.enable]] Enables auto leader balancing
+
+Default: `true`
+
+A <<kafka-controller-KafkaController.adoc#scheduleAutoLeaderRebalanceTask, background thread>> checks and triggers leader balance if required.
+
+* Use `KafkaConfig.AutoLeaderRebalanceEnableProp` to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#autoLeaderRebalanceEnable, KafkaConfig.autoLeaderRebalanceEnable>> to access the current value
+
+| auto.offset.reset
+a| [[auto.offset.reset]] Reset policy -- what to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted):
+
+* *earliest* -- automatically reset the offset to the earliest offset
+* *latest* -- automatically reset the offset to the latest offset
+* *none* -- throw an exception to the consumer if no previous offset is found for the consumer's group
+* anything else: throw an exception to a consumer
+
+Default: `latest`
+
+| background.threads
+a| [[background.threads]] The number of threads to use for various background processing tasks
+
+Default: `10`
+
+Must be at least `1`
+
+<<kafka-server-DynamicThreadPool.adoc#, Dynamic reconfigurable configuration>>
+
+| link:kafka-properties-bootstrap-servers.adoc[bootstrap.servers]
+a| [[bootstrap.servers]] A comma-separated list of `host:port` pairs that are the addresses of one or more brokers in a link:kafka-brokers.adoc[Kafka cluster], e.g. `localhost:9092` or `localhost:9092,another.host:9092`.
+
+Default: `(empty)`
+
+| broker.id
+| [[broker.id]] The broker id of a Kafka broker for identification purposes
+
+If unset, a unique broker id will be generated. To avoid conflicts between zookeeper generated broker id's and user configured broker id's, generated broker IDs start from <<reserved.broker.max.id, reserved.broker.max.id>> + 1.
+
+Use <<kafka-server-KafkaConfig.adoc#brokerId, KafkaConfig.brokerId>> to access the current value.
+
+| broker.id.generation.enable
+a| [[broker.id.generation.enable]] Enables *automatic broker id generation* of a Kafka broker
+
+Default: `true`
+
+When enabled (`true`) the value configured for <<reserved.broker.max.id, reserved.broker.max.id>> should be checked.
+
+* Use `KafkaConfig.BrokerIdGenerationEnableProp` to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#brokerIdGenerationEnable, KafkaConfig.brokerIdGenerationEnable>> to access the current value
+
+| broker.rack
+| [[broker.rack]]
+
+| check.crcs
+| [[check.crcs]] Automatically check the CRC32 of the records consumed. This ensures no on-the-wire or on-disk corruption to the messages occurred. This check adds some overhead, so it may be disabled in cases seeking extreme performance.
+
+Use `ConsumerConfig.CHECK_CRCS_CONFIG`
+
+| link:kafka-properties-client-id.adoc[client.id]
+a| [[client.id]]
+
+Default: `(randomly-generated)`
+
+| connection.failed.authentication.delay.ms
+a| [[connection.failed.authentication.delay.ms]] Connection close delay on failed authentication: this is the time (in milliseconds) by which connection close will be delayed on authentication failure. This must be configured to be less than <<connections.max.idle.ms, connections.max.idle.ms>> to prevent connection timeout.
+
+Default: `100`
+
+Has to be at least `0`
+
+| connections.max.idle.ms
+a| [[connections.max.idle.ms]] Idle connections timeout: the server socket processor threads close the connections that idle more than this
+
+Default: `10 * 60 * 1000L`
+
+| control.plane.listener.name
+a| [[control.plane.listener.name]] Name of the listener for communication between controller and brokers
+
+Default: `null` (undefined), i.e. no dedicated endpoint
+
+Must be defined in <<listener.security.protocol.map, listener.security.protocol.map>>
+
+NOTE: FIXME Is this true? Must be defined among <<advertised.listeners, advertised.listeners>>.
+
+Must be different than link:kafka-server-KafkaConfig.adoc#interBrokerListenerName[interBrokerListenerName]
+
+Broker will use the name to locate the endpoint in <<listeners, listeners>>, to listen for connections from the controller.
+
+For example, if a broker's config is:
+
+```
+listeners=INTERNAL://192.1.1.8:9092,EXTERNAL://10.1.1.5:9093,CONTROLLER://192.1.1.8:9094
+listener.security.protocol.map=INTERNAL:PLAINTEXT,EXTERNAL:SSL,CONTROLLER:SSL
+control.plane.listener.name=CONTROLLER
+```
+
+On startup, the broker will start listening on "192.1.1.8:9094" with security protocol "SSL".
+On controller side, when it discovers a broker's published endpoints through zookeeper, it will use the name to find the endpoint, which it will use to establish connection to the broker.
+
+For example, if the broker's published endpoints on zookeeper are:
+
+```
+"endpoints": [
+  "INTERNAL://broker1:9092",
+  "EXTERNAL://broker1:9093",
+  "CONTROLLER://broker1:9094"
+]
+```
+
+and the controller's config is:
+
+```
+listener.security.protocol.map=INTERNAL:PLAINTEXT,EXTERNAL:SSL,CONTROLLER:SSL
+control.plane.listener.name=CONTROLLER
+```
+
+then a controller will use "broker1:9094" with security protocol "SSL" to connect to the broker.
+
+* Use link:kafka-server-KafkaConfig.adoc#ControlPlaneListenerNameProp[KafkaConfig.ControlPlaneListenerNameProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#controlPlaneListenerName[KafkaConfig.controlPlaneListenerName] to access the current value
+
+| default.replication.factor
+a| [[default.replication.factor]] The default replication factor that is used for auto-created topics
+
+Default: `1`
+
+Increase the default value to at least `2`
+
+| delegation.token.master.key
+a| [[delegation.token.master.key]]
+
+| delete.topic.enable
+a| [[delete.topic.enable]] Enables topic deletion
+
+NOTE: Deleting topic through the admin tool has no effect with the property disabled.
+
+Default: `true`
+
+| link:kafka-properties-enable-auto-commit.adoc[enable.auto.commit]
+a| [[enable.auto.commit]] When enabled (i.e. `true`) consumer offsets are committed automatically in the background (aka _consumer auto commit_) every <<auto.commit.interval.ms, auto.commit.interval.ms>>
+
+Default: `true`
+
+When disabled, offsets have to be committed manually (synchronously using link:kafka-consumer-KafkaConsumer.adoc#commitSync[KafkaConsumer.commitSync] or asynchronously link:kafka-consumer-KafkaConsumer.adoc#commitAsync[KafkaConsumer.commitAsync]). On restart restore the position of a consumer using link:kafka-consumer-KafkaConsumer.adoc#seek[KafkaConsumer.seek].
+
+Used when `KafkaConsumer` is link:kafka-consumer-KafkaConsumer.adoc#creating-instance[created] and creates a link:kafka-consumer-internals-ConsumerCoordinator.adoc#autoCommitEnabled[ConsumerCoordinator].
+
+| fetch.max.bytes
+| [[fetch.max.bytes]] The maximum amount of data the server should return for a fetch request. Records are fetched in batches by the consumer, and if the first record batch in the first non-empty partition of the fetch is larger than this value, the record batch will still be returned to ensure that the consumer can make progress. As such, this is not a absolute maximum. The maximum record batch size accepted by the broker is defined via <<message.max.bytes, message.max.bytes>> (broker config) or <<max.message.bytes, max.message.bytes>> (topic config). Note that the consumer performs multiple fetches in parallel.
+
+Use `ConsumerConfig.FETCH_MAX_BYTES_CONFIG`
+
+| fetch.max.wait.ms
+| [[fetch.max.wait.ms]] The maximum amount of time the server will block before answering the fetch request if there isn't sufficient data to immediately satisfy the requirement given by fetch.min.bytes.
+
+Use `ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG`
+
+| fetch.min.bytes
+| [[fetch.min.bytes]] The minimum amount of data the server should return for a fetch request. If insufficient data is available the request will wait for that much data to accumulate before answering the request. The default setting of 1 byte means that fetch requests are answered as soon as a single byte of data is available or the fetch request times out waiting for data to arrive. Setting this to something greater than 1 will cause the server to wait for larger amounts of data to accumulate which can improve server throughput a bit at the cost of some additional latency.
+
+Use `ConsumerConfig.FETCH_MIN_BYTES_CONFIG`
+
+| file.delete.delay.ms
+a| [[file.delete.delay.ms]]
+
+| link:kafka-properties-group-id.adoc[group.id]
+| [[group.id]] The name of the consumer group the consumer is part of.
+
+| heartbeat.interval.ms
+| [[heartbeat.interval.ms]][[heartbeat_interval_ms]] The expected time between heartbeats to the group coordinator when using Kafka's group management facilities.
+
+| host.name
+a| [[host.name]] The hostname a Kafka broker listens on
+
+Default: `(empty)`
+
+| inter.broker.listener.name
+a| [[inter.broker.listener.name]] Name of the listener for inter-broker communication (resolved per <<listener.security.protocol.map, listener.security.protocol.map>>)
+
+Default: <<security.inter.broker.protocol, security.inter.broker.protocol>>
+
+link:kafka-server-KafkaConfig.adoc#validateValues[Must be] among <<advertised.listeners, advertised.listeners>>
+
+It is an link:kafka-server-KafkaConfig.adoc#getInterBrokerListenerNameAndSecurityProtocol[error] to use together with <<security.inter.broker.protocol, security.inter.broker.protocol>>
+
+* Use link:kafka-server-KafkaConfig.adoc#InterBrokerListenerNameProp[KafkaConfig.InterBrokerListenerNameProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#interBrokerListenerName[KafkaConfig.interBrokerListenerName] to access the current value
+
+| inter.broker.protocol.version
+a| [[inter.broker.protocol.version]] Version of the inter-broker protocol
+
+Default: the latest `ApiVersion` (e.g. `2.1-IV2`)
+
+Typically bumped up after all brokers were upgraded to a new version
+
+* Use <<kafka-server-KafkaConfig.adoc#InterBrokerProtocolVersionProp, KafkaConfig.InterBrokerProtocolVersionProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#interBrokerProtocolVersionString, KafkaConfig.interBrokerProtocolVersionString>> to access the current value
+
+| interceptor.classes
+a| [[interceptor.classes]] Comma-separated list of link:kafka-consumer-ConsumerInterceptor.adoc[ConsumerInterceptor] class names.
+
+Default: `(empty)`
+
+| key.deserializer
+| [[key.deserializer]] How to deserialize message keys.
+
+| leader.imbalance.check.interval.seconds
+a| [[leader.imbalance.check.interval.seconds]] How often the active <<kafka-controller-KafkaController.adoc#, KafkaController>> schedules the <<kafka-controller-KafkaController.adoc#scheduleAutoLeaderRebalanceTask, auto-leader-rebalance-task>> (aka _AutoLeaderRebalance_ or _AutoPreferredReplicaLeaderElection_ or _auto leader balancing_)
+
+Default: `300`
+
+* Use <<kafka-server-KafkaConfig.adoc#LeaderImbalanceCheckIntervalSecondsProp, KafkaConfig.LeaderImbalanceCheckIntervalSecondsProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#leaderImbalanceCheckIntervalSeconds, KafkaConfig.leaderImbalanceCheckIntervalSeconds>> to access the current value
+
+| leader.imbalance.per.broker.percentage
+a| [[leader.imbalance.per.broker.percentage]] Allowed ratio of leader imbalance per broker. The controller would trigger a leader balance if it goes above this value per broker. The value is specified in percentage.
+
+Default: `10`
+
+* Use <<kafka-server-KafkaConfig.adoc#LeaderImbalancePerBrokerPercentageProp, KafkaConfig.LeaderImbalancePerBrokerPercentageProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#leaderImbalancePerBrokerPercentage, KafkaConfig.leaderImbalancePerBrokerPercentage>> to access the current value
+
+| listeners
+a| [[listeners]] Comma-separated list of URIs and listener names that a Kafka broker will listen on
+
+Default: ``PLAINTEXT://<<host.name, host.name>>:<<port, port>>``
+
+Use `0.0.0.0` to bind to all the network interfaces on a machine or leave it empty to bind to the default interface.
+
+* Use <<kafka-server-KafkaConfig.adoc#ListenersProp, KafkaConfig.ListenersProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#listeners, KafkaConfig.listeners>> to access the current value
+
+<<kafka-server-DynamicListenerConfig.adoc#, Dynamic reconfigurable configuration>>
+
+| listener.security.protocol.map
+a| [[listener.security.protocol.map]] Map of listener names and security protocols (key and value are separated by a colon and map entries are separated by commas). Each listener name should only appear once in the map.
+
+Default: Map with `PLAINTEXT`, `SSL`, `SASL_PLAINTEXT`, `SASL_SSL` keys
+
+This map must be defined for the same security protocol to be usable in more than one port or IP. For example, internal and external traffic can be separated even if SSL is required for both. Concretely, the user could define listeners with names INTERNAL and EXTERNAL and this property as: `INTERNAL:SSL,EXTERNAL:SSL`.
+
+Different security (SSL and SASL) settings can be configured for each listener by adding a normalised prefix (the listener name is lowercased) to the config name. For example, to set a different keystore for the INTERNAL listener, a config with name `listener.name.internal.ssl.keystore.location` would be set. If the config for the listener name is not set, the config will fallback to the generic config (`ssl.keystore.location`).
+
+* Use <<kafka-server-KafkaConfig.adoc#ListenerSecurityProtocolMapProp, KafkaConfig.ListenerSecurityProtocolMapProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#listenerSecurityProtocolMap, KafkaConfig.listenerSecurityProtocolMap>> to access the current value
+
+<<kafka-server-DynamicListenerConfig.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleaner.backoff.ms
+a| [[log.cleaner.backoff.ms]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleaner.dedupe.buffer.size
+a| [[log.cleaner.dedupe.buffer.size]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleaner.enable
+a| [[log.cleaner.enable]] Enables the <<kafka-log-LogManager.adoc#cleaner, log cleaner process>> to run on a Kafka broker (`true`). Should be enabled if using any topics with a <<kafka-log-cleanup-policies.adoc#compact, cleanup.policy=compact>> including the internal offsets topic. If disabled those topics will not be compacted and continually grow in size.
+
+Default: `true`
+
+* Use <<kafka-server-KafkaConfig.adoc#LogCleanerEnableProp, KafkaConfig.LogCleanerEnableProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#logCleanerEnable, KafkaConfig.logCleanerEnable>> to access the current value
+
+| log.cleaner.io.buffer.load.factor
+a| [[log.cleaner.io.buffer.load.factor]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleaner.io.buffer.size
+a| [[log.cleaner.io.buffer.size]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleaner.io.max.bytes.per.second
+a| [[log.cleaner.io.max.bytes.per.second]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleaner.threads
+a| [[log.cleaner.threads]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| log.cleanup.policy
+a| [[log.cleanup.policy]] <<kafka-log-cleanup-policies.adoc#, Log Cleanup Policies (Strategies) -- Log Compaction And Retention>>
+
+Default: <<kafka-log-cleanup-policies.adoc#delete, delete>>
+
+Included in <<kafka-server-KafkaServer.adoc#copyKafkaConfigToLog, copyKafkaConfigToLog>> (to set <<kafka-log-LogConfig.adoc#cleanup.policy, cleanup.policy>> of topics)
+
+* Use <<kafka-server-KafkaConfig.adoc#LogCleanupPolicyProp, KafkaConfig.LogCleanupPolicyProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#logCleanupPolicy, KafkaConfig.logCleanupPolicy>> to access the current value
+
+| log.dir
+a| [[log.dir]] The directory in which the log data is kept
+
+Default: `/tmp/kafka-logs`
+
+| log.dirs
+a| [[log.dirs]] The directories in which the log data is kept
+
+Default: <<log.dir, log.dir>>
+
+Use <<kafka-server-KafkaConfig.adoc#logDirs, KafkaConfig.logDirs>> to access the current value.
+
+| log.flush.interval.messages
+a| [[log.flush.interval.messages]] Number of messages written to a log partition is kept in memory before flushing to disk (by forcing an fsync)
+
+Default: `Long.MaxValue` (maximum possible long value)
+
+E.g. if this was set to `1` we would fsync after every message; if it were 5 we would fsync after every five messages.
+
+It is recommended not setting this and using replication for durability and allowing the operating system's background flush capabilities as it is more efficient.
+
+Must be at least `0`
+
+Topic-level configuration: <<kafka-common-TopicConfig.adoc#FLUSH_MESSAGES_INTERVAL_CONFIG, flush.messages>>
+
+* Use <<kafka-server-KafkaConfig.adoc#LogFlushIntervalMessagesProp, KafkaConfig.LogFlushIntervalMessagesProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#logFlushIntervalMessages, KafkaConfig.logFlushIntervalMessages>> to access the current value
+
+| log.flush.interval.ms
+a| [[log.flush.interval.ms]] How long (in millis) a message written to a log partition is kept in memory before flushing to disk (by forcing an fsync). If not set, the value in <<log.flush.scheduler.interval.ms, log.flush.scheduler.interval.ms>> is used.
+
+Default: `null` (undefined)
+
+E.g. if this was set to `1000` we would fsync after 1000 ms had passed.
+
+Used exclusively when `LogManager` is requested to <<kafka-log-LogManager.adoc#flushDirtyLogs, flushDirtyLogs>>.
+
+It is recommended not setting this and using replication for durability and allowing the operating system's background flush capabilities as it is more efficient.
+
+Must be undefined or at least `0`
+
+Topic-level configuration: <<kafka-common-TopicConfig.adoc#FLUSH_MS_CONFIG, flush.messages>>
+
+* Use <<kafka-server-KafkaConfig.adoc#LogFlushIntervalMsProp, KafkaConfig.LogFlushIntervalMsProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#logFlushIntervalMs, KafkaConfig.logFlushIntervalMs>> to access the current value
+
+| log.flush.offset.checkpoint.interval.ms
+a| [[log.flush.offset.checkpoint.interval.ms]]
+
+| log.flush.scheduler.interval.ms
+a| [[log.flush.scheduler.interval.ms]]
+
+| log.flush.start.offset.checkpoint.interval.ms
+a| [[log.flush.start.offset.checkpoint.interval.ms]]
+
+| log.index.size.max.bytes
+a| [[log.index.size.max.bytes]] Maximum size (in bytes) of the offset index file (that maps offsets to file positions). It is preallocated and shrinked only after log rolls.
+
+Default: `10 * 1024 * 1024`
+
+You generally should not need to change this setting.
+
+Must be at least `0`
+
+* Use <<kafka-server-KafkaConfig.adoc#LogIndexSizeMaxBytesProp, KafkaConfig.LogIndexSizeMaxBytesProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#logIndexSizeMaxBytes, KafkaConfig.logIndexSizeMaxBytes>> to access the current value
+
+| log.retention.bytes
+a| [[log.retention.bytes]] Maximum size of a <<kafka-log-Log.adoc#, partition>> (which consists of <<kafka-log-LogSegment.adoc#, log segments>>) to grow before discarding old segments and free up space.
+
+`log.retention.bytes` is enforced at the partition level, multiply it by the number of partitions to compute the topic retention in bytes.
+
+Default: `-1L`
+
+Must be at least `-1`
+
+| log.retention.check.interval.ms
+a| [[log.retention.check.interval.ms]] How often (in millis) the `LogManager` (as link:kafka-server-scheduled-tasks.adoc#kafka-log-retention[kafka-log-retention] task) checks link:kafka-log-LogManager.adoc#cleanupLogs[whether any log is eligible for deletion]
+
+Default: `5 * 60 * 1000L` (millis)
+
+Must be at least `1`
+
+* Use link:kafka-server-KafkaConfig.adoc#LogCleanupIntervalMsProp[KafkaConfig.LogCleanupIntervalMsProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#logCleanupIntervalMs[KafkaConfig.logCleanupIntervalMs] to access the current value
+
+| log.retention.ms
+a| [[log.retention.ms]] How long (in millis) to keep a log file before deleting it. `-1` denotes no time limit
+
+Default: `24 * 7 * 60 * 60 * 1000L` (7 days)
+
+Must be at least `-1`
+
+Unless set, the value of <<log.retention.minutes, log.retention.minutes>> is used.
+
+| log.retention.minutes
+a| [[log.retention.minutes]] How long (in mins) to keep a log file before deleting it. `-1` denotes no time limit
+
+Unless set, the value of <<log.retention.hours, log.retention.hours>> is used. Secondary to the <<log.retention.ms, log.retention.ms>>.
+
+| log.retention.hours
+a| [[log.retention.hours]] How long (in hours) to keep a log file before deleting it. `-1` denotes no time limit
+
+Considered the last unless <<log.retention.ms, log.retention.ms>> and <<log.retention.minutes, log.retention.minutes>> were set.
+
+| log.roll.ms
+a| [[log.roll.ms]] Time (in millis) after which Kafka forces the log to roll even if the segment file isn't full to ensure that retention can delete or compact old data.
+
+Default: `604800000` (7 days)
+
+Must be at least `1`
+
+* Use <<kafka-server-KafkaConfig.adoc#LogRollTimeMillisProp, KafkaConfig.LogRollTimeMillisProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#logRollTimeMillis, KafkaConfig.logRollTimeMillis>> to access the current value
+
+| log.segment.bytes
+a| [[log.segment.bytes]] The maximum size of a segment file of logs. Retention and cleaning are always done one file at a time so a larger segment size means fewer files but less granular control over retention.
+
+Default: `1 * 1024 * 1024 * 1024`
+
+Must be at least `14` bytes (`LegacyRecord.RECORD_OVERHEAD_V0`)
+
+Use <<kafka-server-KafkaConfig.adoc#logSegmentBytes, KafkaConfig.logSegmentBytes>> to access the current value.
+
+| max.block.ms
+a| [[max.block.ms]]
+
+| max.partition.fetch.bytes
+a| [[max.partition.fetch.bytes]] The maximum amount of data per-partition the server will return. Records are fetched in batches by the consumer. If the first record batch in the first non-empty partition of the fetch is larger than this limit, the batch will still be returned to ensure that the consumer can make progress. The maximum record batch size accepted by the broker is defined via <<message.max.bytes, message.max.bytes>> (broker config) or <<max.message.bytes, max.message.bytes>> (topic config).
+
+Use `ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG`
+
+NOTE: Use <<fetch.max.bytes, fetch.max.bytes>> for limiting the consumer request size.
+
+| max.poll.records
+a| [[max.poll.records]] (KafkaConsumer) The maximum number of records returned from a Kafka `Consumer` when link:kafka-consumer-Consumer.adoc#poll[polling topics for records].
+
+The default setting (`-1`) sets no upper bound on the number of records, i.e. `Consumer.poll()` will return as soon as either any data is available or the passed timeout expires.
+
+`max.poll.records` was added to Kafka in https://issues.apache.org/jira/browse/KAFKA-3007[0.10.0.0] by https://cwiki.apache.org/confluence/display/KAFKA/KIP-41%3A+KafkaConsumer+Max+Records[KIP-41: KafkaConsumer Max Records].
+
+From https://groups.google.com/d/msg/kafka-clients/5jagwTywVb8/2v7vYg9SBAAJ[kafka-clients] mailing list:
+
+> `max.poll.records` only controls the number of records returned from poll, but does not affect fetching. The consumer will try to prefetch records from all partitions it is assigned. It will then buffer those records and return them in batches of `max.poll.records` each (either all from the same topic partition if there are enough left to satisfy the number of records, or from multiple topic partitions if the data from the last fetch for one of the topic partitions does not cover the `max.poll.records`).
+
+Use `ConsumerConfig.MAX_POLL_RECORDS_CONFIG`.
+
+---
+
+Internally, `max.poll.records` is used exclusively when `KafkaConsumer` is link:kafka-consumer-KafkaConsumer.adoc#creating-instance[created] (to create a link:kafka-consumer-KafkaConsumer.adoc#fetcher[Fetcher]).
+
+| message.max.bytes
+a| [[message.max.bytes]]
+
+<<kafka-server-LogCleaner.adoc#, Dynamic reconfigurable configuration>>
+
+| metadata.max.age.ms
+| [[metadata.max.age.ms]]
+
+| metric.reporters
+| [[metric.reporters]][[metric_reporters]] The list of fully-qualified classes names of the link:kafka-MetricsReporter.adoc[metrics reporters].
+
+Default: <<kafka-MetricsReporter.adoc#JmxReporter, JmxReporter>>
+
+| metrics.num.samples
+| [[metrics.num.samples]][[metrics_num_samples]] Number of samples to compute metrics.
+
+| metrics.sample.window.ms
+| [[metrics.sample.window.ms]][[metrics_sample_window_ms]] Time window (in milliseconds) a metrics sample is computed over.
+
+| min.insync.replicas
+a| [[min.insync.replicas]] The minimum number of replicas in ISR that is needed to commit a produce request with `required.acks=-1` (or `all`)
+
+Default: `1`
+
+Must be at least `1`
+
+When a Kafka producer sets acks to `all` (or `-1`), this configuration specifies the minimum number of replicas that must acknowledge a write for the write to be considered successful.
+
+If this minimum cannot be met, then the producer will raise an exception (either `NotEnoughReplicas` or `NotEnoughReplicasAfterAppend`).
+
+Used together with acks allows you to enforce greater durability guarantees.
+
+A typical scenario would be to create a topic with a replication factor of 3, set `min.insync.replicas` to 2, and produce with acks of "all". This will ensure that the producer raises an exception if a majority of replicas do not receive a write.
+
+* Use link:kafka-server-KafkaConfig.adoc#MinInSyncReplicasProp[KafkaConfig.MinInSyncReplicasProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#minInSyncReplicas[KafkaConfig.minInSyncReplicas] to access the current value
+
+| num.io.threads
+a| [[num.io.threads]] The number of threads that link:kafka-server-KafkaServer.adoc[KafkaServer] uses for processing requests, which may include disk I/O
+
+Default: `8`
+
+Must be at least `1`
+
+<<kafka-server-DynamicThreadPool.adoc#, Dynamic reconfigurable configuration>>
+
+| max.connections.per.ip
+a| [[max.connections.per.ip]] The maximum number of connections allowed from each ip address.
+
+Default: `Int.MaxValue`
+
+Must be at least `0` (with `0` if there are overrides configured using <<max.connections.per.ip.overrides, max.connections.per.ip.overrides>> property)
+
+<<kafka-server-DynamicConnectionQuota.adoc#, Dynamic reconfigurable configuration>>
+
+| max.connections.per.ip.overrides
+a| [[max.connections.per.ip.overrides]] A comma-separated list of per-ip or hostname overrides to the default <<max.connections.per.ip, maximum number of connections>>, e.g. `hostName:100,127.0.0.1:200`
+
+Default: (empty)
+
+<<kafka-server-DynamicConnectionQuota.adoc#, Dynamic reconfigurable configuration>>
+
+| num.network.threads
+a| [[num.network.threads]] The number of threads that SocketServer uses for the link:kafka-network-SocketServer.adoc#numProcessorThreads[number of processors per endpoint] (for receiving requests from the network and sending responses to the network)
+
+Default: `3`
+
+Must be at least `1`
+
+<<kafka-server-DynamicThreadPool.adoc#, Dynamic reconfigurable configuration>>
+
+| num.partitions
+| [[num.partitions]] The number of log partitions for auto-created topics
+
+Default: `1`
+
+Increase the default value (`1`) since it is better to over-partition a topic that leads to a better data balancing and aids consumer parallelism.
+
+| num.recovery.threads.per.data.dir
+a| [[num.recovery.threads.per.data.dir]] The number of threads per log data directory for log recovery at startup and flushing at shutdown
+
+Default: `1`
+
+Must be at least `1`
+
+<<kafka-server-DynamicThreadPool.adoc#, Dynamic reconfigurable configuration>>
+
+| num.replica.alter.log.dirs.threads
+a| [[num.replica.alter.log.dirs.threads]] The number of link:kafka-server-ReplicaAlterLogDirsManager.adoc#numFetchers[threads] that can move replicas between log directories, which may include disk I/O
+
+Default: `null`
+
+* Use link:kafka-server-KafkaConfig.adoc#NumReplicaAlterLogDirsThreadsProp[KafkaConfig.NumReplicaAlterLogDirsThreadsProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#getNumReplicaAlterLogDirsThreads[KafkaConfig.getNumReplicaAlterLogDirsThreads] to access the current value
+
+| num.replica.fetchers
+a| [[num.replica.fetchers]] The number of fetcher threads that link:kafka-server-ReplicaFetcherManager.adoc#num.replica.fetchers[ReplicaFetcherManager] uses for replicating messages from a source broker
+
+Default: `1`
+
+The higher the value the higher degree of I/O parallelism in a follower broker.
+
+link:kafka-server-DynamicThreadPool.adoc[Dynamic reconfigurable configuration]
+
+* Use link:kafka-server-KafkaConfig.adoc#NumReplicaFetchersProp[KafkaConfig.NumReplicaFetchersProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#numReplicaFetchers[KafkaConfig.numReplicaFetchers] to access the current value
+
+| port
+| [[port]] The port a Kafka broker listens on
+
+Default: `9092`
+
+| principal.builder.class
+a| [[principal.builder.class]] Fully-qualified name of link:kafka-common-security-auth-KafkaPrincipalBuilder.adoc[KafkaPrincipalBuilder] implementation to build the link:kafka-common-security-auth-KafkaPrincipal.adoc[KafkaPrincipal] object for link:kafka-security-ssl-authentication-and-authorization.adoc[authorization]
+
+Default: `null` (i.e. link:kafka-common-security-authenticator-DefaultKafkaPrincipalBuilder.adoc[DefaultKafkaPrincipalBuilder])
+
+Supports the deprecated `PrincipalBuilder` interface which was previously used for client authentication over SSL.
+
+If no principal builder is defined, the default behavior depends on the security protocol in use:
+
+* For SSL authentication, the principal will be derived using the rules defined by <<ssl.principal.mapping.rules, ssl.principal.mapping.rules>> applied on the distinguished name from the client certificate if one is provided; otherwise, if client authentication is not required, the principal name will be ANONYMOUS.
+
+* For SASL authentication, the principal will be derived using the rules defined by <<sasl.kerberos.principal.to.local.rules, sasl.kerberos.principal.to.local.rules>> if GSSAPI is in use, and the SASL authentication ID for other mechanisms. For PLAINTEXT, the principal will be ANONYMOUS.
+
+Used when `ChannelBuilders` is requested to link:kafka-common-network-ChannelBuilders.adoc#createPrincipalBuilder[create a KafkaPrincipalBuilder]
+
+link:kafka-server-DynamicListenerConfig.adoc[Dynamic reconfigurable configuration]
+
+* Use link:kafka-server-KafkaConfig.adoc#PrincipalBuilderClassProp[KafkaConfig.PrincipalBuilderClassProp] to reference the property
+
+| replica.fetch.backoff.ms
+a| [[replica.fetch.backoff.ms]] How long (in millis) a link:kafka-server-AbstractFetcherThread.adoc[fetcher thread] is going to sleep when there are no active partitions (while link:kafka-server-AbstractFetcherThread.adoc#maybeFetch[sending a fetch request]) or after a link:kafka-server-AbstractFetcherThread.adoc#processFetchRequest[fetch partition error] and link:kafka-server-AbstractFetcherThread.adoc#handlePartitionsWithErrors[handlePartitionsWithErrors]
+
+Default: `1000` (millis)
+
+Must be at least `0`
+
+* Use <<kafka-server-KafkaConfig.adoc#ReplicaFetchBackoffMsProp, KafkaConfig.ReplicaFetchBackoffMsProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#replicaFetchBackoffMs, KafkaConfig.replicaFetchBackoffMs>> to access the current value
+
+| replica.fetch.max.bytes
+a| [[replica.fetch.max.bytes]] The number of bytes of messages to attempt to fetch for each partition
+
+Default: `1024 * 1024` (1 MB)
+
+Must be at least `0`
+
+This is not an absolute maximum, if the first record batch in the first non-empty partition of the fetch is larger than this value, the record batch will still be returned to ensure that progress can be made. The maximum record batch size accepted by the broker is defined via <<message.max.bytes, message.max.bytes>> (broker config) or <<max.message.bytes, max.message.bytes>> (topic config).
+
+* Use <<kafka-server-KafkaConfig.adoc#ReplicaFetchMaxBytesProp, KafkaConfig.ReplicaFetchMaxBytesProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#replicaFetchMaxBytes, KafkaConfig.replicaFetchMaxBytes>> to access the current value
+
+| replica.fetch.response.max.bytes
+a| [[replica.fetch.response.max.bytes]] Maximum bytes expected for the entire fetch response
+
+Default: `10 * 1024 * 1024`
+
+Must be at least `0`
+
+Records are fetched in batches, and if the first record batch in the first non-empty partition of the fetch is larger than this value, the record batch will still be returned to ensure that progress can be made. As such, this is not an absolute maximum. The maximum record batch size accepted by the broker is defined via <<message.max.bytes, message.max.bytes>> (broker config) or <<max.message.bytes, max.message.bytes>> (topic config).
+
+* Use <<kafka-server-KafkaConfig.adoc#ReplicaFetchResponseMaxBytesProp, KafkaConfig.ReplicaFetchResponseMaxBytesProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#replicaFetchResponseMaxBytes, KafkaConfig.replicaFetchResponseMaxBytes>> to access the current value
+
+| queued.max.requests
+a| [[queued.max.requests]] The number of queued requests allowed before blocking the network threads
+
+Default: `500`
+
+Must be at least `1`
+
+| rebalance.timeout.ms
+| [[rebalance.timeout.ms]][[rebalance_timeout_ms]] The maximum allowed time for each worker to join the group once a rebalance has begun.
+
+| receive.buffer.bytes
+| [[receive.buffer.bytes]] The hint about the size of the TCP network receive buffer (SO_RCVBUF) to use (for a socket) when reading data. If the value is -1, the OS default will be used.
+
+| replica.fetch.wait.max.ms
+a| [[replica.fetch.wait.max.ms]]
+
+| replica.lag.time.max.ms
+a| [[replica.lag.time.max.ms]] How long to wait for a link:kafka-cluster-Partition.adoc#isFollowerOutOfSync[follower to consume up to the leader's log end offset (LEO)] before the leader removes the follower from the ISR of a partition
+
+Default: `10000L` (millis)
+
+NOTE: <<replica.fetch.wait.max.ms, replica.fetch.wait.max.ms>> should always be less than or equal to `replica.lag.time.max.ms` to prevent frequent changes in ISR.
+
+* Use <<kafka-server-KafkaConfig.adoc#ReplicaLagTimeMaxMsProp, KafkaConfig.ReplicaLagTimeMaxMsProp>> to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#replicaLagTimeMaxMs, KafkaConfig.replicaLagTimeMaxMs>> to access the current value
+
+| replica.socket.timeout.ms
+a| [[replica.socket.timeout.ms]] Socket timeout of `ReplicaFetcherBlockingSend` when link:kafka-server-ReplicaFetcherBlockingSend.adoc#sendRequest[sending network requests] to partition leader brokers
+
+Default: `30 * 1000` (30 seconds)
+
+Should always be at least <<replica.fetch.wait.max.ms, replica.fetch.wait.max.ms>> to prevent unnecessary socket timeouts
+
+* Use link:kafka-server-KafkaConfig.adoc#ReplicaSocketTimeoutMsProp[KafkaConfig.ReplicaSocketTimeoutMsProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#replicaSocketTimeoutMs[KafkaConfig.replicaSocketTimeoutMs] to access the current value
+
+| request.timeout.ms
+| [[request.timeout.ms]] The configuration controls the maximum amount of time the client will wait for the response of a request. If the response is not received before the timeout elapses the client will resend the request if necessary or fail the request if retries are exhausted.
+
+Use `ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG`
+
+| reserved.broker.max.id
+| [[reserved.broker.max.id]] Maximum number that can be used for <<broker.id, broker.id>>. Has to be at least `0`.
+
+Default: `1000`
+
+* Use `KafkaConfig.MaxReservedBrokerIdProp` to reference the property
+
+* Use <<kafka-server-KafkaConfig.adoc#maxReservedBrokerId, KafkaConfig.maxReservedBrokerId>> to access the current value
+
+| link:kafka-properties-retry-backoff-ms.adoc[retry.backoff.ms]
+| [[retry.backoff.ms]] Time to wait before attempting to retry a failed request to a given topic partition. This avoids repeatedly sending requests in a tight loop under some failure scenarios.
+
+Use `ConsumerConfig.RETRY_BACKOFF_MS_CONFIG`
+
+| sasl.mechanism.inter.broker.protocol
+a| [[sasl.mechanism.inter.broker.protocol]]
+
+| sasl.jaas.config
+a| [[sasl.jaas.config]]
+
+| sasl.enabled.mechanisms
+a| [[sasl.enabled.mechanisms]]
+
+| sasl.kerberos.service.name
+a| [[sasl.kerberos.service.name]]
+
+| sasl.kerberos.kinit.cmd
+a| [[sasl.kerberos.kinit.cmd]]
+
+| sasl.kerberos.ticket.renew.window.factor
+a| [[sasl.kerberos.ticket.renew.window.factor]]
+
+| sasl.kerberos.ticket.renew.jitter
+a| [[sasl.kerberos.ticket.renew.jitter]]
+
+| sasl.kerberos.min.time.before.relogin
+a| [[sasl.kerberos.min.time.before.relogin]]
+
+| sasl.kerberos.principal.to.local.rules
+a| [[sasl.kerberos.principal.to.local.rules]]
+
+| sasl.login.refresh.window.factor
+a| [[sasl.login.refresh.window.factor]]
+
+| sasl.login.refresh.window.jitter
+a| [[sasl.login.refresh.window.jitter]]
+
+| sasl.login.refresh.min.period.seconds
+a| [[sasl.login.refresh.min.period.seconds]]
+
+| sasl.login.refresh.buffer.seconds
+a| [[sasl.login.refresh.buffer.seconds]]
+
+| security.inter.broker.protocol
+a| [[security.inter.broker.protocol]] Security protocol for inter-broker communication
+
+Default: `PLAINTEXT`
+
+Possible values:
+
+* `PLAINTEXT`
+* `SSL`
+* `SASL_PLAINTEXT`
+* `SASL_SSL`
+
+It is an link:kafka-server-KafkaConfig.adoc#getInterBrokerListenerNameAndSecurityProtocol[error] when defined with <<inter.broker.listener.name, inter.broker.listener.name>> (as it then should only be in <<listener.security.protocol.map, listener.security.protocol.map>>).
+
+It is <<validateValues, validated>> when the inter-broker communication uses a SASL protocol (`SASL_PLAINTEXT` or `SASL_SSL`) for...FIXME
+
+* Use link:kafka-server-KafkaConfig.adoc#InterBrokerSecurityProtocolProp[KafkaConfig.InterBrokerSecurityProtocolProp] to reference the property
+
+* Use link:kafka-server-KafkaConfig.adoc#interBrokerSecurityProtocol[KafkaConfig.interBrokerSecurityProtocol] to access the current value
+
+| send.buffer.bytes
+| [[send.buffer.bytes]] The hint about the size of the TCP network send buffer (SO_SNDBUF) to use (for a socket) when sending data. If the value is -1, the OS default will be used.
+
+| session.timeout.ms
+| [[session.timeout.ms]][[session_timeout_ms]] The timeout used to detect worker failures.
+
+Default: `10000`
+
+| socket.request.max.bytes
+a| [[socket.request.max.bytes]] The maximum number of bytes in a socket request
+
+Default: `100 * 1024 * 1024`
+
+Must be at least `1`
+
+| ssl.principal.mapping.rules
+a| [[ssl.principal.mapping.rules]] Rules for mapping from the distinguished name from a client certificate to short name.
+
+Default: `DEFAULT` (i.e. the distinguished name of a X.500 certificate is the principal)
+
+The rules are evaluated in order and the first rule that matches a principal name is used to map it to a short name. Any later rules in the list are ignored.
+
+This configuration is ignored for a custom `KafkaPrincipalBuilder` as defined by the <<principal.builder.class, principal.builder.class>> configuration.
+
+Used when `SslChannelBuilder` is link:kafka-common-network-SslChannelBuilder.adoc#configure[configured] (to create a link:kafka-common-network-SslChannelBuilder.adoc#sslPrincipalMapper[SslPrincipalMapper])
+
+* Use link:kafka-server-KafkaConfig.adoc#SslPrincipalMappingRulesProp[KafkaConfig.SslPrincipalMappingRulesProp] to reference the property
+
+| ssl.protocol
+a| [[ssl.protocol]]
+
+| ssl.provider
+a| [[ssl.provider]]
+
+| ssl.cipher.suites
+a| [[ssl.cipher.suites]]
+
+| ssl.enabled.protocols
+a| [[ssl.enabled.protocols]]
+
+| ssl.keystore.type
+a| [[ssl.keystore.type]]
+
+| ssl.keystore.location
+a| [[ssl.keystore.location]]
+
+| ssl.keystore.password
+a| [[ssl.keystore.password]]
+
+| ssl.key.password
+a| [[ssl.key.password]]
+
+| ssl.truststore.type
+a| [[ssl.truststore.type]]
+
+| ssl.truststore.location
+a| [[ssl.truststore.location]]
+
+| ssl.truststore.password
+a| [[ssl.truststore.password]]
+
+| ssl.keymanager.algorithm
+a| [[ssl.keymanager.algorithm]]
+
+| ssl.trustmanager.algorithm
+a| [[ssl.trustmanager.algorithm]]
+
+| ssl.endpoint.identification.algorithm
+a| [[ssl.endpoint.identification.algorithm]]
+
+| ssl.secure.random.implementation
+a| [[ssl.secure.random.implementation]]
+
+| ssl.client.auth
+a| [[ssl.client.auth]] Client authentication
+
+Default: `none`
+
+Supported values (case-insensitive): `required`, `requested`, `none`
+
+link:kafka-common-config-SslConfigs.adoc#NON_RECONFIGURABLE_CONFIGS[Non-reconfigurable]
+
+link:kafka-server-DynamicListenerConfig.adoc#ReconfigurableConfigs[ReconfigurableConfigs]
+
+* Use <<kafka-server-KafkaConfig.adoc#SslClientAuthProp, KafkaConfig.SslClientAuthProp>> to reference the property
+
+| transactional.id.expiration.ms
+a| [[transactional.id.expiration.ms]]
+
+| transaction.max.timeout.ms
+a| [[transaction.max.timeout.ms]] The maximum allowed timeout for transactions (in millis).
+
+If a client's requested transaction time exceed this, then the broker will return an error in `InitProducerIdRequest`. This prevents a client from a too large timeout that can stall consumers reading from topics included in the transaction.
+
+Default: `15 minutes`
+
+Must be at least `1`
+
+* Use <<kafka-server-KafkaConfig.adoc#transactionMaxTimeoutMs, KafkaConfig.transactionMaxTimeoutMs>> to access the current value
+
+| unclean.leader.election.enable
+a| [[unclean.leader.election.enable]] Enables link:kafka-partition-leader-election.adoc#unclean-partition-leader-election[Unclean Partition Leader Election]
+
+Cluster-wide property: link:kafka-server-KafkaConfig.adoc#unclean.leader.election.enable[unclean.leader.election.enable]
+
+Topic-level property: link:kafka-log-LogConfig.adoc#unclean.leader.election.enable[unclean.leader.election.enable]
+
+| value.deserializer
+| [[value.deserializer]][[value_deserializer]] How to deserialize message values
+
+| zookeeper.connect
+a| [[zookeeper.connect]] Comma-separated list of Zookeeper hosts (as `host:port` pairs) that brokers register to, e.g. `localhost:2181`, `127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002`
+
+Default: `(empty)`
+
+Zookeeper URIs can have an optional chroot path suffix at the end, e.g. `127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002/app/a`
+
+If the optional chroot path suffix is used, all paths are relative to this path.
+
+It is recommended to include all the hosts in a Zookeeper ensemble (cluster)
+
+* Available as `KafkaConfig.ZkConnectProp`
+
+* Use <<kafka-server-KafkaConfig.adoc#zkConnect, KafkaConfig.zkConnect>> to access the current value
+
+| zookeeper.connection.timeout.ms
+a| [[zookeeper.connection.timeout.ms]] The max time that the client waits to establish a connection to zookeeper
+
+Default: <<zookeeper.session.timeout.ms, zookeeper.session.timeout.ms>>
+
+* Available as `KafkaConfig.ZkConnectionTimeoutMsProp`
+
+* Use <<kafka-server-KafkaConfig.adoc#zkConnectionTimeoutMs, KafkaConfig.zkConnectionTimeoutMs>> to access the current value
+
+| zookeeper.max.in.flight.requests
+a| [[zookeeper.max.in.flight.requests]] The maximum number of unacknowledged requests the client will send to Zookeeper before blocking. Has to be at least 1
+
+Default: `10`
+
+* Available as `KafkaConfig.ZkMaxInFlightRequestsProp`
+
+* Use <<kafka-server-KafkaConfig.adoc#zkMaxInFlightRequests, KafkaConfig.zkMaxInFlightRequests>> to access the current value
+
+| zookeeper.session.timeout.ms
+a| [[zookeeper.session.timeout.ms]] Zookeeper session timeout
+
+Default: `6000`
+
+* Available as `KafkaConfig.ZkSessionTimeoutMsProp`
+
+* Use <<kafka-server-KafkaConfig.adoc#zkSessionTimeoutMs, KafkaConfig.zkSessionTimeoutMs>> to access the current value
+
+| zookeeper.set.acl
+a| [[zookeeper.set.acl]] Enables secure ACLs
+
+Default: `false`
+
+* Available as `KafkaConfig.ZkEnableSecureAclsProp`
+
+* Use <<kafka-server-KafkaConfig.adoc#zkEnableSecureAcls, KafkaConfig.zkEnableSecureAcls>> to access the current value
+
+|===
