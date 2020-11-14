@@ -30,11 +30,11 @@ Section 3 - Zookeeper Quorum Setup:
             -   Zookeeper Quorum Sizing
             -   Zookeeper Configuration
             -   Hands-On: Zookeeper AWS Setup
-            -   Hands-On: Single Zookeeper Machine Setup
-            -   Hands-On: Zookeeper Service Setup
+                          Single Zookeeper Machine Setup
+                          Zookeeper Service Setup
             -   Using the Zookeeper Command Line Interface (CLI)
             -   Hands-On: Zookeeper Quorum setup - Part 1 AWS
-            -   Hands-On: Zookeeper Quorum Setup - Part 2 Zookeeper
+                          Zookeeper Quorum Setup - Part 2 Zookeeper
             -   Zookeeper Internal File System
             -   Factors impacting Zookeeper Peformance
             -   Zookeeper in AWS
@@ -80,3 +80,42 @@ Section 4 - Kafka Cluster Setup:
 
 
 
+
+Fundamentals of Apache Kafka
+● Kafka as a Distributed Streaming Platform
+● The Distributed Log
+● Producer and Consumer Basics
+Kafka’s Architecture
+● Kafka’s Commit Log
+● Replication for High Availability
+● Partitions and Consumer Groups for Scalability
+● Security Overview
+Providing Durability
+● Data Replication
+● Failure Recovery
+● Log Files and Offset Management
+● Exactly-Once Semantics (EOS)
+Managing a Cluster
+● Installing the Confluent Platform
+● Configuration Management
+● Monitoring
+● Log Retention and Compaction
+● Commissioning and Decommissioning Brokers
+Optimizing Kafka’s Performance
+● Monitoring, Testing, and Tuning Brokers and Kafka Clients
+● The Consumer Group Protocol
+Kafka Security
+● Transport Encryption
+● Authentication
+● Securing Apache Kafka and the Complete Confluent Platform
+● Migrating to a Secure Cluster
+Data Pipelines with Kafka Connect
+● The Motivation for Kafka Connect
+● Types of Connectors
+● Kafka Connect Implementation
+● Standalone and Distributed Modes
+● Configuring the Connectors
+Kafka in Production
+● Kafka Reference Architecture for Apache Kafka and the Complete Confluent Platform
+● Capacity Planning
+● Multi Data Center Deployments
