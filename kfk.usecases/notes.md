@@ -1,6 +1,6 @@
 
 ## kafka usecases 
-
+```
 
 Understanding Kafka Storage Architecture
 
