@@ -78,7 +78,7 @@ Section 4 - Kafka Cluster Setup:
 
 ```
 
-
+```
 
 
 Fundamentals of Apache Kafka
