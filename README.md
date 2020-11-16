@@ -6,9 +6,6 @@
             - A single node – single  broker cluster
             - A single node – multiple broker clusters
         - Confluent
-        - Docker
-        - Kubernetes
-        - On Cloud
         - Hardware and OS Config
             - OS,Disks and Filesystems
             - Application vs OS Flush Management
@@ -38,7 +35,7 @@
             - Resetting Offsets
             - What about UIs? Conduktor
             - KafkaCat as a replacement for Kafka CLI
-            - Confluent CLI
+            - Confluent Control Center (UI)
         - Broker Config
         - Topic Config
         - Producer Internals/Config
@@ -63,6 +60,7 @@
       -  Confluent Schema Registry and Kafka
       - Confluent REST Proxy
       - KSQL/KSQLDB in Dev/Production
+     -  Kafka Streams Using the UI 
    
 5. Kafka Connect
         - How to Source Twitter Data, Store in Apache Kafka Topics &
@@ -83,7 +81,8 @@ Kafka Workshop - Projects/UseCases :
        - Topic with Multiple Partitions
        - Kafka Cluster with Multiple Brokers
        - Multiple Brokers and Topic with Replication
-       - Kafka Spark Integration
+       - A multi-node – multiple broker clusters  
+       -  Spark overview
        - Kafka Consumer Groups
        - Performance Testing
        - Java/Python/nodejs
