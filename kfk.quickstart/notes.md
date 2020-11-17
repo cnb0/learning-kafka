@@ -40,8 +40,6 @@ Advanced Topic config
         min.insync.replicas reminder
         Unclean Leader Election
 
-
-
 Producer and Advanced Configurations Overview
         Twitter Setup
         Producer Part 1 - Writing Twitter Client
