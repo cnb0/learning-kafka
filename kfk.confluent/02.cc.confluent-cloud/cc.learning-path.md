@@ -8,14 +8,14 @@
 ```
 - Get started with Confluent Cloud
 
-        Confluent Cloud Guided Tutorials
+        - Confluent Cloud Guided Tutorials
                     - Tutorials that walk you through the process of setting up your
                       Confluent Cloud environment.
-        Confluent Cloud Quick Start
-                    - Learn how to get up and running with the Quick Start for Apache Kafka using 
-                      Confluent Cloud. 
-                    - It demonstrates the basics of using Confluent Cloud, including creating topics and 
-                      producing and consuming to a Kafka cluster in Confluent Cloud.
+        - Confluent Cloud Quick Start
+                    - [Quick Start for Apache Kafka using Confluent Cloud](https://docs.confluent.io/current/cloud/quickstart/index.html) 
+                        - It demonstrates the basics of using Confluent Cloud, 
+                          including creating topics and  producing and 
+                          consuming to a Kafka cluster in Confluent Cloud.
         - Get Access to Confluent Cloud
         - Confluent Cloud Online Talk
         - Confluent Cloud Demo Examples
