@@ -1,5 +1,5 @@
 ## Kafka Learning path 
-
+```
 
 Theory Overview
         Topics, Partitions and Offsets
