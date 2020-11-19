@@ -38,10 +38,10 @@
             - Confluent Control Center (UI)
         - Broker Config
         - Topic Config
-        - Producer Internals/Config
-        - Consumer Internals/Config
+        - Producer Config
+        - Consumer Config
         - Kafka Connect Configs
-        - kafka Client/server Configs
+        - kafka Client/Server Configs
         - Graceful shutdown
         - Balancing leadership
         - Checking consumer position
@@ -82,7 +82,7 @@ Kafka Workshop - Projects/UseCases :
        - Kafka Cluster with Multiple Brokers
        - Multiple Brokers and Topic with Replication
        - A multi-node – multiple broker clusters  
-       -  Spark overview
+       - Spark overview
        - Kafka Consumer Groups
        - Performance Testing
        - Java/Python/nodejs
