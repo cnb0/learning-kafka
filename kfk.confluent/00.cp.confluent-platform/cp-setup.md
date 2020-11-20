@@ -1,6 +1,6 @@
 ## Confluent platform 
 
-``
+```
 Manual : 
 
     - Quick Start for Apache Kafka using Confluent Platform (Local)  - GUI 
@@ -40,7 +40,7 @@ Manual :
                 - Examine Streams, Tables, and Queries
             - Step 5: Monitor Streaming Data
 
-
+ 
 Docker :
         - https://github.com/cnb0/learning-kafka/tree/main/WS/00.kfk.confluent.docker.setup
                 Single Zookeeper / Single Kafka
@@ -57,10 +57,7 @@ Docker :
                  Step 6: Stop Docker
 
 Automated :
-    
     - Ansible
     - kubernetes 
-
 Cloud :
-
 Kubernetes :
