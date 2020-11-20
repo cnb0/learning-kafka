@@ -1,11 +1,13 @@
 
 ## [ConfluentCloud](https://docs.confluent.io/current/cloud/index.html)
 
+- 0. [QuickStart-Kafka](https://jaceklaskowski.github.io/kafka-workshop/slides/apache-kafka-essentials.html#/)
+
+```
     - Confluent Cloud is the industry’s only fully managed, cloud-native 
       event streaming platform powered by Apache Kafka®. 
     - Confluent Cloud provides a simple, scalable, resilient, and secure event streaming platform.  
-    
-```
+
 - Get started with Confluent Cloud
 
         - Confluent Cloud Guided Tutorials
@@ -18,7 +20,7 @@
                           consuming to a Kafka cluster in Confluent Cloud.
 
                      -[Create streaming queries in Confluent Cloud ksqlDB](https://docs.confluent.io/current/cloud/quickstart/ksql.html)
-                     
+
         - Get Access to Confluent Cloud
         - Confluent Cloud Online Talk
         - Confluent Cloud Demo Examples
