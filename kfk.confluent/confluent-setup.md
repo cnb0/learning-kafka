@@ -1,6 +1,6 @@
 ## Confluent platform setup 
 
-``
+```
 
 - Get started with Confluent Platform
         Confluent Platform is a streaming platform that enables you to organize and manage data from 
@@ -44,15 +44,6 @@
                - Confluent Cloud documentation
 
                - [Confluent Cloud Demos Overview](https://docs.confluent.io/current/tutorials/examples/ccloud/docs/ccloud-demos-overview.html#ccloud-demos-overview)
-
-
-
-
-
-
-
-
-
 
 
 Manual : 
