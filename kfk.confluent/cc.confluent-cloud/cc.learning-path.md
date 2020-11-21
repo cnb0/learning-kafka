@@ -1,8 +1,6 @@
 
 ## [ConfluentCloud](https://docs.confluent.io/current/cloud/index.html)
 
-- 0. [QuickStart-Kafka](https://jaceklaskowski.github.io/kafka-workshop/slides/apache-kafka-essentials.html#/)
-
 ```
     - Confluent Cloud is the industry’s only fully managed, cloud-native 
       event streaming platform powered by Apache Kafka®. 

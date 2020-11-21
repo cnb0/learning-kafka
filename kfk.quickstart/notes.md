@@ -1,6 +1,11 @@
 ## Kafka Learning path 
-```
 
+- 0. [QuickStart-Kafka](https://jaceklaskowski.github.io/kafka-workshop/slides/apache-kafka-essentials.html#/)
+- 1. [kafak onk8s](https://strimzi.io/quickstarts/)
+
+
+
+```
 Theory Overview
         Topics, Partitions and Offsets
         Brokers and Topics
