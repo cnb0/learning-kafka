@@ -13,8 +13,8 @@ First let's add the environment variables. Make sure to adapt the network interf
 
 ```
 # Set environment variables to match the IP address of the local machine
-export PUBLIC_IP=10.1.215.134
-export DOCKER_HOST_IP=10.1.215.134
+export PUBLIC_IP=localhost      #10.1.215.134
+export DOCKER_HOST_IP=localhost #10.1.215.134
 ```
 
 Now for Elasticsearch to run properly, we have to increase the `vm.max_map_count` parameter like shown below.  
