@@ -20,8 +20,6 @@ KAFKA CLI/UI
         What about UIs? Conduktor
         KafkaCat as a replacement for Kafka CLI
 
-
-
 KAFKA Admin 
         Adding and removing topics
         Modifying topics
