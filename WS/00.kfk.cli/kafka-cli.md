@@ -2,19 +2,19 @@
 
 ## Kafka CLI 
 
- Kafka Topics CLI
- Kafka Console Producer CLI
- Kafka Console Consumer CLI
- Kafka Consumers in Group
- Kafka Consumer Groups CLI
- Resetting Offsets
- CLI Options that are good to know
- What about UIs? Conduktor
- KafkaCat as a replacement for Kafka CLI
+ - Kafka Topics CLI
+ - Kafka Console Producer CLI
+ - Kafka Console Consumer CLI
+ - Kafka Consumers in Group
+ - Kafka Consumer Groups CLI
+ - Resetting Offsets
+ - CLI Options that are good to know
+ - What about UIs? Conduktor
+ - KafkaCat as a replacement for Kafka CLI
 
 
-[kafka CLI](https://medium.com/@TimvanBaarsen/apache-kafka-cli-commands-cheat-sheet-a6f06eac01b#f574)
-[Simple Kafak CLI](https://ronnieroller.com/kafka/cheat-sheet)
+- [kafka CLI](https://medium.com/@TimvanBaarsen/apache-kafka-cli-commands-cheat-sheet-a6f06eac01b#f574)
+- [Simple Kafak CLI](https://ronnieroller.com/kafka/cheat-sheet)
 
 **Setup**
 
