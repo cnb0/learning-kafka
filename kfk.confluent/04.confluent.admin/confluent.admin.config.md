@@ -1,6 +1,10 @@
 
 ## [Confluent Administer](https://docs.confluent.io/current/administer.html)
 
+
+  - [Running Kafka in production](https://docs.confluent.io/platform/current/kafka/deployment.html#)
+  - [Ansible Deployments](https://docs.confluent.io/ansible/current/index.html)
+
 ```
     - Resources to administer Confluent Platform in your environment.
         - Self-Balancing Clusters
