@@ -1,3 +1,0 @@
-== [[AbstractResponse]] AbstractResponse
-
-`AbstractResponse` is...FIXME

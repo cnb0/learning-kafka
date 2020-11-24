@@ -1,3 +1,0 @@
-== [[ConsumerMetrics]] ConsumerMetrics
-
-`ConsumerMetrics` is...FIXME

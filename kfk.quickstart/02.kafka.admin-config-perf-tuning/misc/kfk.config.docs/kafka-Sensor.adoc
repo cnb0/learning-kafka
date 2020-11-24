@@ -1,3 +1,0 @@
-== [[Sensor]] Sensor
-
-`Sensor` is...FIXME

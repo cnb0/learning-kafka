@@ -1,3 +1,0 @@
-== [[Serde]] Serde Contract
-
-`Serde` is...FIXME

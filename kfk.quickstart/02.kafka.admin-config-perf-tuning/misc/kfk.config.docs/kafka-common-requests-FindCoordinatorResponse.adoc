@@ -1,3 +1,0 @@
-== [[FindCoordinatorResponse]] FindCoordinatorResponse
-
-`FindCoordinatorResponse` is...FIXME

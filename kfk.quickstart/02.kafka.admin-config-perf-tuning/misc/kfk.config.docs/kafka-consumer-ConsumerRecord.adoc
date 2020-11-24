@@ -1,3 +1,0 @@
-== [[ConsumerRecord]] ConsumerRecord
-
-`ConsumerRecord` is...FIXME

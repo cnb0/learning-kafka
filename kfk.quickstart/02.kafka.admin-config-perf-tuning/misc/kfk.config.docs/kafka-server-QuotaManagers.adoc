@@ -1,3 +1,0 @@
-== [[QuotaManagers]] QuotaManagers
-
-`QuotaManagers` is...FIXME

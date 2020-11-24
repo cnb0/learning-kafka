@@ -1,3 +1,0 @@
-== [[HeartbeatResponseHandler]] HeartbeatResponseHandler
-
-`HeartbeatResponseHandler` is...FIXME

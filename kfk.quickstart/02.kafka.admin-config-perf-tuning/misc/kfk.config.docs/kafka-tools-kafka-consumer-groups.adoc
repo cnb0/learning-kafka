@@ -1,3 +1,0 @@
-== [[kafka-consumer-groups]] kafka-consumer-groups.sh Shell Script
-
-`kafka-consumer-groups.sh` is a shell script that...FIXME

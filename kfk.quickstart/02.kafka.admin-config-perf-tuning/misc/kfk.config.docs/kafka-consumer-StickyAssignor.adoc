@@ -1,3 +1,0 @@
-== [[StickyAssignor]] StickyAssignor
-
-`StickyAssignor` is...FIXME

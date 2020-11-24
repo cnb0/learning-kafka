@@ -1,3 +1,0 @@
-== [[RoundRobinAssignor]] RoundRobinAssignor
-
-`RoundRobinAssignor` is...FIXME

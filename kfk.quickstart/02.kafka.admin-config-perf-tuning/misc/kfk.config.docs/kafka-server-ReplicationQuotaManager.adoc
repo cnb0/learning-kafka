@@ -1,3 +1,0 @@
-== [[ReplicationQuotaManager]] ReplicationQuotaManager
-
-`ReplicationQuotaManager` is...FIXME

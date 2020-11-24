@@ -1,3 +1,0 @@
-== [[InvalidOffsetException]] InvalidOffsetException
-
-`InvalidOffsetException` is...FIXME

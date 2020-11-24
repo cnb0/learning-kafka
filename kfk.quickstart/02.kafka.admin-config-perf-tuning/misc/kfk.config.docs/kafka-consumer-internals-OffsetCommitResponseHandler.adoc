@@ -1,3 +1,0 @@
-== [[OffsetCommitResponseHandler]] OffsetCommitResponseHandler
-
-`OffsetCommitResponseHandler` is...FIXME

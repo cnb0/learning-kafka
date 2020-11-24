@@ -1,3 +1,0 @@
-== Transactional Producer
-
-*Transactional Producer* is a Kafka <<kafka-producer-Producer.adoc#, Producer>> that uses a <<kafka-producer-internals-TransactionManager.adoc#, TransactionManager>> for...FIXME

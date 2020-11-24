@@ -1,3 +1,0 @@
-== [[SyncGroupResponseHandler]] SyncGroupResponseHandler
-
-`SyncGroupResponseHandler` is...FIXME

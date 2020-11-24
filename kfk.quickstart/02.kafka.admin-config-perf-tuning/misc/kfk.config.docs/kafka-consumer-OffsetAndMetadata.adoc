@@ -1,3 +1,0 @@
-== [[OffsetAndMetadata]] OffsetAndMetadata
-
-`OffsetAndMetadata` is...FIXME
