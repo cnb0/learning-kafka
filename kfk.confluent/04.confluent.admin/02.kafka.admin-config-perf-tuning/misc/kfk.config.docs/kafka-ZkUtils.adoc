@@ -1,0 +1,213 @@
+== [[ZkUtils]] ZkUtils
+
+`ZkUtils` is...FIXME
+
+`ZkUtils` is <<creating-instance, created>> when...FIXME
+
+[NOTE]
+====
+Quoting http://zookeeper.apache.org/doc/trunk/zookeeperOver.html#Nodes+and+ephemeral+nodes[Nodes and ephemeral nodes] from the Zookeeper documentation:
+
+> Unlike standard file systems, each node in a ZooKeeper namespace can have data associated with it as well as children. It is like having a file-system that allows a file to also be a directory. (ZooKeeper was designed to store coordination data: status information, configuration, location information, etc., so the data stored at each node is usually small, in the byte to kilobyte range.) We use the term znode to make it clear that we are talking about ZooKeeper data nodes.
+
+> Znodes maintain a stat structure that includes version numbers for data changes, ACL changes, and timestamps, to allow cache validations and coordinated updates. Each time a znode's data changes, the version number increases. For instance, whenever a client retrieves data it also receives the version of the data.
+
+> The data stored at each znode in a namespace is read and written atomically. Reads get all the data bytes associated with a znode and a write replaces all the data. Each node has an Access Control List (ACL) that restricts who can do what.
+====
+
+[[paths]]
+.ZkUtils's ZNodes in Zookeeper
+[cols="1,2",options="header",width="100%"]
+|===
+| ZNode
+| Description
+
+| [[ControllerPath]] `ControllerPath`
+| `/controller`
+|===
+
+[[internal-registries]]
+.ZkUtils's Internal Properties (e.g. Registries and Counters) (in alphabetical order)
+[cols="1,2",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| [[persistentZkPaths]] `persistentZkPaths`
+|
+
+| [[zkPath]] `zkPath`
+|
+|===
+
+=== [[getCluster]] `getCluster` Method
+
+[source, scala]
+----
+getCluster(): Cluster
+----
+
+`getCluster` <<getChildrenParentMayNotExist, gets the children znodes>> of `/brokers/ids` znode and <<readData, reads their data>> (as a JSON blob).
+
+`getCluster` then adds link:kafka-cluster-Broker.adoc#createBroker[creates] a `Broker` from the znode id and the JSON blob (with a host, a port and endpoints).
+
+NOTE: `getCluster` is used exclusively when `ZKRebalancerListener` does link:kafka-ZKRebalancerListener.adoc#syncedRebalance[syncedRebalance] (that happens for the currently-deprecated `ZookeeperConsumerConnector`).
+
+=== [[deletePathRecursive]] `deletePathRecursive` Method
+
+CAUTION: FIXME
+
+=== [[deletePath]] `deletePath` Method
+
+CAUTION: FIXME
+
+=== [[apply]] Creating ZkUtils Instance -- `apply` Factory Method
+
+[source, scala]
+----
+apply(
+  zkUrl: String,
+  sessionTimeout: Int,
+  connectionTimeout: Int,
+  isZkSecurityEnabled: Boolean): ZkUtils
+----
+
+`apply`...FIXME
+
+[NOTE]
+====
+`apply` is used when:
+
+1. `KafkaServer` link:kafka-server-KafkaServer.adoc#initZk[connects to Zookeeper]
+1. FIXME
+====
+
+=== [[subscribeStateChanges]] Registering Listener for State Changes -- `subscribeStateChanges` Method
+
+[source, scala]
+----
+subscribeStateChanges(listener: IZkStateListener): Unit
+----
+
+`subscribeStateChanges` requests <<zkClient, ZkClient>> to `subscribeStateChanges` with the `listener`.
+
+[NOTE]
+====
+`subscribeStateChanges` is used when:
+
+1. `KafkaController` is requested to link:kafka-controller-KafkaController.adoc#registerSessionExpirationListener[register a SessionExpirationListener]
+
+1. FIXME
+====
+
+=== [[subscribeChildChanges]] Registering Listener for Child Changes -- `subscribeChildChanges` Method
+
+[source, scala]
+----
+subscribeChildChanges(path: String, listener: IZkChildListener): Option[Seq[String]]
+----
+
+`subscribeChildChanges`...FIXME
+
+NOTE: `subscribeChildChanges` is used...FIXME
+
+=== [[unsubscribeChildChanges]] De-Registering Listener for Child Changes -- `unsubscribeChildChanges` Method
+
+[source, scala]
+----
+unsubscribeChildChanges(path: String, childListener: IZkChildListener): Unit
+----
+
+`unsubscribeChildChanges` requests <<zkClient, ZkClient>> to `unsubscribeChildChanges` for the input `path` and `childListener`.
+
+NOTE: `unsubscribeChildChanges` is used when...FIXME
+
+=== [[unsubscribeDataChanges]] De-Registering Listener for Data Changes -- `unsubscribeDataChanges` Method
+
+[source, scala]
+----
+unsubscribeDataChanges(path: String, dataListener: IZkDataListener): Unit
+----
+
+`unsubscribeDataChanges` requests <<zkClient, ZkClient>> to `unsubscribeDataChanges` for the input `path` and `dataListener`.
+
+NOTE: `unsubscribeDataChanges` is used when...FIXME
+
+=== [[registerBrokerInZk]] `registerBrokerInZk` Method
+
+[source, scala]
+----
+registerBrokerInZk(
+  id: Int,
+  host: String,
+  port: Int,
+  advertisedEndpoints: Seq[EndPoint],
+  jmxPort: Int,
+  rack: Option[String],
+  apiVersion: ApiVersion): Unit
+----
+
+`registerBrokerInZk`...FIXME
+
+NOTE: `registerBrokerInZk` is used exclusively when `KafkaHealthcheck` is requested to link:kafka-KafkaHealthcheck.adoc#register[register].
+
+=== [[getTopicPartitionCount]] `getTopicPartitionCount` Method
+
+[source, scala]
+----
+getTopicPartitionCount(topic: String): Option[Int]
+----
+
+`getTopicPartitionCount`...FIXME
+
+[NOTE]
+====
+`getTopicPartitionCount` is used when:
+
+1. `GroupMetadataManager` is requested for link:kafka-coordinator-group-GroupMetadataManager.adoc#getGroupMetadataTopicPartitionCount[getGroupMetadataTopicPartitionCount] of `__consumer_offsets` topic
+
+1. `TransactionStateManager` is requested for link:kafka-TransactionStateManager.adoc#getTransactionTopicPartitionCount[getTransactionTopicPartitionCount] of `__transaction_state` topic
+====
+
+=== [[controllerZkData]] Creating JSON with Broker ID -- `controllerZkData` Method
+
+[source, scala]
+----
+controllerZkData(brokerId: Int, timestamp: Long): String
+----
+
+`controllerZkData` creates a JSON with the following fields:
+
+* `"version":1`
+* `"brokerid":[brokerId]`
+* `"timestamp":[timestamp]`
+
+[source, scala]
+----
+import kafka.utils._
+scala> ZkUtils.controllerZkData(1, System.currentTimeMillis())
+res0: String = {"version":1,"brokerid":1,"timestamp":"1506161225262"}
+----
+
+NOTE: `controllerZkData` is used exclusively when `KafkaController` is requested for link:kafka-controller-KafkaController.adoc#elect[elect].
+
+=== [[creating-instance]] Creating ZkUtils Instance
+
+`ZkUtils` takes the following when created:
+
+* [[zkClient]] `ZkClient`
+* [[zkConnection]] `ZkConnection`
+* [[isSecure]] `isSecure` flag
+
+`ZkUtils` initializes the <<internal-registries, internal registries and counters>>.
+
+=== [[readDataMaybeNull]] Reading Data Associated with ZNode -- `readDataMaybeNull` Method
+
+[source, scala]
+----
+readDataMaybeNull(path: String): (Option[String], Stat)
+----
+
+`readDataMaybeNull` requests <<zkClient, ZkClient>> to `readData` from `path` znode.
+
+`readDataMaybeNull` returns `None` (for `Option[String]`) when `path` znode is not available.

@@ -1,0 +1,77 @@
+== [[KafkaServerStartable]] KafkaServerStartable -- Thin Management Layer over KafkaServer
+
+`KafkaServerStartable` is a thin management layer to manage a single <<server, KafkaServer>> instance.
+
+.KafkaServerStartable manages KafkaServer
+image::images/KafkaServerStartable-KafkaServer.png[align="center"]
+
+`KafkaServerStartable` allows for the <<server, KafkaServer>> instance to be <<startup, started>>, <<shutdown, shut down>> and <<awaitShutdown, waited for until shutdown>>.
+
+[[internal-registries]]
+.KafkaServerStartable's Internal Properties (e.g. Registries and Counters)
+[frame="topbot",cols="1,2",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| [[server]] `server`
+| link:kafka-server-KafkaServer.adoc[KafkaServer] instance.
+
+Created when `KafkaServerStartable` is <<creating-instance, created>>.
+|===
+
+=== [[awaitShutdown]] `awaitShutdown` Method
+
+CAUTION: FIXME
+
+=== [[shutdown]] `shutdown` Method
+
+[source, scala]
+----
+shutdown(): Unit
+----
+
+`shutdown`...FIXME
+
+NOTE: `shutdown` is used exclusively when `Kafka` standalone application is requested to "shut down" (as part of the <<kafka-Kafka.adoc#main, kafka-shutdown-hook>> shutdown hook).
+
+=== [[creating-instance]] Creating KafkaServerStartable Instance
+
+`KafkaServerStartable` takes the following when created:
+
+1. link:kafka-server-KafkaConfig.adoc[KafkaConfig]
+2. Collection of link:kafka-KafkaMetricsReporter.adoc[KafkaMetricsReporters]
+
+`KafkaServerStartable` initializes the <<internal-registries, internal registries and counters>>.
+
+=== [[fromProps]] Creating KafkaServerStartable From Java Properties -- `fromProps` Method
+
+[source, scala]
+----
+fromProps(serverProps: Properties): KafkaServerStartable
+----
+
+`fromProps` creates a `KafkaServerStartable` with a custom `serverProps` properties file.
+
+CAUTION: FIXME
+
+NOTE: `fromProps` is used when `kafka.Kafka` runs as a standalone command-line application
+
+=== [[startup]] `startup` Method
+
+[source, scala]
+----
+startup(): Unit
+----
+
+`startup` requests the managed <<server, KafkaServer>> to link:kafka-server-KafkaServer.adoc#startup[start].
+
+In case of any exceptions, `startup` exits the JVM with status `1`. You should see the following FATAL message in the logs if that happens.
+
+```
+FATAL Exiting Kafka.
+```
+
+NOTE: `startup` uses Java's link:++https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#exit-int-++[System.exit] to terminate a JVM.
+
+NOTE: `startup` is used when `kafka.Kafka` command-line application (`kafka-server-start`) is <<kafka-Kafka.adoc#main, executed>>.

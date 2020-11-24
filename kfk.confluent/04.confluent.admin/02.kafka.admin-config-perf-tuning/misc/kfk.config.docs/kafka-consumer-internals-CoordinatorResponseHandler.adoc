@@ -1,0 +1,75 @@
+== [[CoordinatorResponseHandler]] CoordinatorResponseHandler Contract
+
+`CoordinatorResponseHandler` is the <<contract, extension>> of the <<kafka-consumer-internals-RequestFutureAdapter.adoc#, RequestFutureAdapter contract>> for <<extensions, type converters>> that <<handle, handle ClientResponses>>.
+
+[[contract]]
+.CoordinatorResponseHandler Contract
+[cols="1m,2",options="header",width="100%"]
+|===
+| Method
+| Description
+
+| handle
+a| [[handle]]
+
+[source, java]
+----
+void handle(
+  R response,
+  RequestFuture<T> future)
+----
+
+Handles a successful response from a group coordinator
+
+Used exclusively when `CoordinatorResponseHandler` is requested to <<onSuccess, onSuccess>>
+
+|===
+
+[[extensions]]
+.CoordinatorResponseHandlers
+[cols="1,2",options="header",width="100%"]
+|===
+| CoordinatorResponseHandler
+| Description
+
+| <<kafka-consumer-internals-HeartbeatResponseHandler.adoc#, HeartbeatResponseHandler>>
+| [[HeartbeatResponseHandler]]
+
+| <<kafka-consumer-internals-JoinGroupResponseHandler.adoc#, JoinGroupResponseHandler>>
+| [[JoinGroupResponseHandler]] Handles <<kafka-common-requests-JoinGroupResponse.adoc#, JoinGroupResponses>>
+
+| LeaveGroupResponseHandler
+| [[LeaveGroupResponseHandler]]
+
+| <<kafka-consumer-internals-OffsetCommitResponseHandler.adoc#, OffsetCommitResponseHandler>>
+| [[OffsetCommitResponseHandler]]
+
+| OffsetFetchResponseHandler
+| [[OffsetFetchResponseHandler]]
+
+| <<kafka-consumer-internals-SyncGroupResponseHandler.adoc#, SyncGroupResponseHandler>>
+| [[SyncGroupResponseHandler]]
+
+|===
+
+=== [[onFailure]] `onFailure` Method
+
+[source, java]
+----
+void onFailure(RuntimeException e, RequestFuture<T> future)
+----
+
+NOTE: `onFailure` is part of the <<kafka-consumer-internals-RequestFutureAdapter.adoc#onFailure, RequestFutureAdapter Contract>> to perform a type conversion when a `RequestFuture` completes with a failure.
+
+`onFailure`...FIXME
+
+=== [[onSuccess]] `onSuccess` Method
+
+[source, java]
+----
+void onSuccess(ClientResponse clientResponse, RequestFuture<T> future)
+----
+
+NOTE: `onSuccess` is part of the <<kafka-consumer-internals-RequestFutureAdapter.adoc#onSuccess, RequestFutureAdapter Contract>> to perform a type conversion when a `RequestFuture` completes with a success.
+
+`onSuccess`...FIXME

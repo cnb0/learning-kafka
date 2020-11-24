@@ -1,0 +1,122 @@
+== [[ReplicaAlterLogDirsThread]] ReplicaAlterLogDirsThread
+
+`ReplicaAlterLogDirsThread` is a link:kafka-server-AbstractFetcherThread.adoc[fetcher thread] of link:kafka-server-ReplicaAlterLogDirsManager.adoc[ReplicaAlterLogDirsManager].
+
+`ReplicaAlterLogDirsThread` is <<creating-instance, created>> when `ReplicaAlterLogDirsManager` is requested to <<kafka-server-ReplicaAlterLogDirsManager.adoc#createFetcherThread, create a fetcher thread>>.
+
+`ReplicaAlterLogDirsThread` uses the following <<properties, configuration properties>>.
+
+[[properties]]
+.ReplicaAlterLogDirsThread's Configuration Properties
+[cols="30,70",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| link:kafka-properties.adoc#replica.fetch.backoff.ms[replica.fetch.backoff.ms]
+a| [[replica.fetch.backoff.ms]] Used for link:kafka-server-AbstractFetcherThread.adoc#fetchBackOffMs[fetchBackOffMs]
+
+| link:kafka-properties.adoc#broker.id[broker.id]
+a| [[broker.id]][[replicaId]] Used to <<buildFetchForPartition, buildFetchForPartition>>
+
+| link:kafka-properties.adoc#replica.fetch.response.max.bytes[replica.fetch.response.max.bytes]
+a| [[replica.fetch.response.max.bytes]][[maxBytes]] Used to <<buildFetchForPartition, buildFetchForPartition>>
+
+| link:kafka-properties.adoc#replica.fetch.max.bytes[replica.fetch.max.bytes]
+a| [[replica.fetch.max.bytes]][[fetchSize]] Used to <<buildFetchForPartition, buildFetchForPartition>>
+
+|===
+
+[[isOffsetForLeaderEpochSupported]]
+`ReplicaAlterLogDirsThread` has <<kafka-server-AbstractFetcherThread.adoc#isOffsetForLeaderEpochSupported, isOffsetForLeaderEpochSupported>> flag always enabled (`true`).
+
+=== [[creating-instance]] Creating ReplicaAlterLogDirsThread Instance
+
+`ReplicaAlterLogDirsThread` takes the following to be created:
+
+* [[name]] Thread Name
+* [[sourceBroker]] Source `BrokerEndPoint`
+* [[brokerConfig]] link:kafka-server-KafkaConfig.adoc[KafkaConfig]
+* [[replicaMgr]] link:kafka-server-ReplicaManager.adoc[ReplicaManager]
+* [[quota]] link:kafka-server-ReplicationQuotaManager.adoc[ReplicationQuotaManager]
+* [[brokerTopicStats]] link:kafka-server-BrokerTopicStats.adoc[BrokerTopicStats]
+
+`ReplicaAlterLogDirsThread` initializes the <<internal-registries, internal registries and counters>>.
+
+=== [[fetchFromLeader]] `fetchFromLeader` Method
+
+[source, scala]
+----
+fetchFromLeader(
+  fetchRequest: FetchRequest.Builder): Seq[(TopicPartition, FetchData)]
+----
+
+NOTE: `fetchFromLeader` is part of the link:kafka-server-AbstractFetcherThread.adoc#fetchFromLeader[AbstractFetcherThread] contract to...FIXME.
+
+`fetchFromLeader`...FIXME
+
+=== [[processPartitionData]] `processPartitionData` Method
+
+[source, scala]
+----
+processPartitionData(
+  topicPartition: TopicPartition,
+  fetchOffset: Long,
+  partitionData: PartitionData[Records]): Option[LogAppendInfo]
+----
+
+NOTE: `processPartitionData` is part of the <<kafka-server-AbstractFetcherThread.adoc#processPartitionData, AbstractFetcherThread Contract>> to...FIXME.
+
+`processPartitionData`...FIXME
+
+=== [[truncateFullyAndStartAt]] `truncateFullyAndStartAt` Method
+
+[source, scala]
+----
+truncateFullyAndStartAt(
+  topicPartition: TopicPartition,
+  offset: Long): Unit
+----
+
+NOTE: `truncateFullyAndStartAt` is part of the <<kafka-server-AbstractFetcherThread.adoc#truncateFullyAndStartAt, AbstractFetcherThread Contract>> to...FIXME.
+
+`truncateFullyAndStartAt`...FIXME
+
+=== [[truncate]] `truncate` Method
+
+[source, scala]
+----
+truncate(
+  topicPartition: TopicPartition,
+  truncationState: OffsetTruncationState): Unit
+----
+
+NOTE: `truncate` is part of the <<kafka-server-AbstractFetcherThread.adoc#truncate, AbstractFetcherThread Contract>> to...FIXME.
+
+`truncate`...FIXME
+
+=== [[buildFetch]] `buildFetch` Method
+
+[source, scala]
+----
+buildFetch(
+  partitionMap: Map[TopicPartition, PartitionFetchState]
+): ResultWithPartitions[Option[FetchRequest.Builder]]
+----
+
+NOTE: `buildFetch` is part of the <<kafka-server-AbstractFetcherThread.adoc#buildFetch, AbstractFetcherThread Contract>> to...FIXME
+
+`buildFetch`...FIXME
+
+=== [[buildFetchForPartition]] `buildFetchForPartition` Internal Method
+
+[source, scala]
+----
+buildFetchForPartition(
+  tp: TopicPartition,
+  fetchState: PartitionFetchState): ResultWithPartitions[Option[FetchRequest.Builder]]
+----
+
+`buildFetchForPartition`...FIXME
+
+NOTE: `buildFetchForPartition` is used when `ReplicaAlterLogDirsThread` is requested to <<buildFetch, buildFetch>>.

@@ -1,0 +1,791 @@
+== [[KafkaConfig]] KafkaConfig
+
+`KafkaConfig` is the configuration of a Kafka broker and the services.
+
+`KafkaConfig` is <<creating-instance, created>> when:
+
+* `KafkaConfig` is requested to <<fromProps, fromProps>> and <<apply, apply>>
+
+* `DynamicBrokerConfig` is requested to <<kafka-server-DynamicBrokerConfig.adoc#initialize, initialize>> and <<kafka-server-DynamicBrokerConfig.adoc#processReconfiguration, processReconfiguration>>
+
+[source, scala]
+----
+import kafka.server.KafkaConfig
+assert(KafkaConfig.LogCleanupPolicyProp == "log.cleanup.policy")
+
+import java.util.Properties
+val props = new Properties()
+props.put(KafkaConfig.ZkConnectProp, ":9092") // required property
+val kafkaConfig = KafkaConfig.fromProps(props, doLog = false)
+
+import scala.collection.JavaConverters._
+assert(kafkaConfig.logCleanupPolicy.asScala.head == "delete")
+----
+
+[[configuration-values]]
+.KafkaConfig's Configuration Values
+[cols="1m,2",options="header",width="100%"]
+|===
+| Value
+| Kafka Property
+
+| advertisedListeners
+a| [[advertisedListeners]][[AdvertisedListenersProp]] <<kafka-properties.adoc#advertised.listeners, advertised.listeners>> (see <<advertisedListeners-method, advertisedListeners>>)
+
+Used when:
+
+* `DynamicListenerConfig` is requested to <<kafka-server-DynamicListenerConfig.adoc#validateReconfiguration, validate reconfiguration>>
+
+* `KafkaConfig` is requested to <<validateValues, validateValues>>
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#createBrokerInfo, createBrokerInfo>> (when <<kafka-server-KafkaServer.adoc#startup, started>>)
+
+| authorizerClassName
+a| [[authorizerClassName]][[AuthorizerClassNameProp]] <<kafka-properties.adoc#authorizer.class.name, authorizer.class.name>>
+
+Used exclusively for <<kafka-server-KafkaServer.adoc#authorizer, KafkaServer>>
+
+| autoCreateTopicsEnable
+a| [[autoCreateTopicsEnable]] <<kafka-properties.adoc#auto.create.topics.enable, auto.create.topics.enable>>
+
+Used when `KafkaApis` is requested to <<kafka-server-KafkaApis.adoc#getTopicMetadata, getTopicMetadata>> and <<kafka-server-KafkaApis.adoc#handleTopicMetadataRequest, handleTopicMetadataRequest>>
+
+| autoLeaderRebalanceEnable
+a| [[autoLeaderRebalanceEnable]] <<kafka-properties.adoc#auto.leader.rebalance.enable, auto.leader.rebalance.enable>>
+
+Used exclusively when `KafkaController` is requested to <<kafka-controller-KafkaController.adoc#onControllerFailover, onControllerFailover>>
+
+| backgroundThreads
+a| [[backgroundThreads]][[BackgroundThreadsProp]] <<kafka-properties.adoc#background.threads, background.threads>>
+
+| brokerId
+a| [[brokerId]] <<kafka-properties.adoc#broker.id, broker.id>>
+
+| brokerIdGenerationEnable
+a| [[brokerIdGenerationEnable]] <<kafka-properties.adoc#broker.id.generation.enable, broker.id.generation.enable>>
+
+Used exclusively when `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#getBrokerIdAndOfflineDirs, getBrokerIdAndOfflineDirs>>
+
+| compressionType
+a| [[compressionType]][[CompressionTypeProp]] compression.type
+
+| connectionsMaxIdleMs
+a| [[connectionsMaxIdleMs]] <<kafka-properties.adoc#connections.max.idle.ms, connections.max.idle.ms>>
+
+Used when:
+
+* `TransactionMarkerChannelManager` is created
+
+* `SocketServer` is requested to <<kafka-network-SocketServer.adoc#newProcessor, create a new network processor thread>>
+
+* `ReplicaFetcherBlockingSend` is <<kafka-server-ReplicaFetcherBlockingSend.adoc#networkClient, created>>
+
+| deleteTopicEnable
+| [[deleteTopicEnable]] link:kafka-properties.adoc#delete.topic.enable[delete.topic.enable]
+
+| failedAuthenticationDelayMs
+a| [[failedAuthenticationDelayMs]] <<kafka-properties.adoc#connection.failed.authentication.delay.ms, connection.failed.authentication.delay.ms>>
+
+Used exclusively when `SocketServer` is requested to <<kafka-network-SocketServer.adoc#newProcessor, create a new network processor thread>>
+
+| hostName
+| [[hostName]] link:kafka-properties.adoc#host.name[host.name]
+
+| interBrokerListenerName
+a| [[interBrokerListenerName]][[InterBrokerListenerNameProp]] link:kafka-properties.adoc#inter.broker.listener.name[inter.broker.listener.name] (based on <<getInterBrokerListenerNameAndSecurityProtocol, getInterBrokerListenerNameAndSecurityProtocol>>)
+
+Used when:
+
+* `Broker` is requested for link:kafka-cluster-Broker.adoc#toServerInfo[toServerInfo]
+
+* `ControllerChannelManager` is requested to link:kafka-controller-ControllerChannelManager.adoc#addNewBroker[register a new broker]
+
+* `AbstractControllerBrokerRequestBatch` is requested to link:kafka-controller-AbstractControllerBrokerRequestBatch.adoc#sendLeaderAndIsrRequest[send LeaderAndIsr requests out to all brokers]
+
+* `TransactionMarkerChannelManager` utility is requested to link:kafka-TransactionMarkerChannelManager.adoc#apply[create a TransactionMarkerChannelManager]
+
+* `SocketServer` is requested to link:kafka-network-SocketServer.adoc#startDataPlaneProcessors[startDataPlaneProcessors]
+
+* link:kafka-network-SocketServer-Processor.adoc[Processor] is created (and creates the link:kafka-network-SocketServer-Processor.adoc#selector[Selector])
+
+* `ConnectionQuotas` is requested to `protectedListener`
+
+* `DynamicListenerConfig` is requested to link:kafka-server-DynamicListenerConfig.adoc#validateReconfiguration[validateReconfiguration]
+
+* `KafkaConfig` is requested to <<validateValues, validateValues>>
+
+* `KafkaServer` is requested to link:kafka-server-KafkaServer.adoc#controlledShutdown[controlledShutdown]
+
+* link:kafka-server-ReplicaFetcherBlockingSend.adoc[ReplicaFetcherBlockingSend] is created
+
+* `ReplicaManager` is requested to link:kafka-server-ReplicaManager.adoc#makeFollowers[makeFollowers]
+
+| interBrokerProtocolVersion
+a| [[interBrokerProtocolVersion]][[interBrokerProtocolVersionString]][[InterBrokerProtocolVersionProp]] <<kafka-properties.adoc#inter.broker.protocol.version, inter.broker.protocol.version>>
+
+| interBrokerSecurityProtocol
+a| [[interBrokerSecurityProtocol]][[InterBrokerSecurityProtocolProp]] link:kafka-properties.adoc#security.inter.broker.protocol[security.inter.broker.protocol] (based on <<getInterBrokerListenerNameAndSecurityProtocol, getInterBrokerListenerNameAndSecurityProtocol>>)
+
+Used when:
+
+* `ControllerChannelManager` is requested to link:kafka-controller-ControllerChannelManager.adoc#addNewBroker[add a new broker] (unless link:kafka-properties.adoc#control.plane.listener.name[control.plane.listener.name] is defined)
+
+* `TransactionMarkerChannelManager` utility is requested to link:kafka-TransactionMarkerChannelManager.adoc#apply[create a TransactionMarkerChannelManager] (with link:kafka-properties.adoc#inter.broker.listener.name[inter.broker.listener.name])
+
+* `KafkaServer` is requested to link:kafka-server-KafkaServer.adoc#controlledShutdown[controlledShutdown] (with link:kafka-properties.adoc#inter.broker.listener.name[inter.broker.listener.name])
+
+* link:kafka-server-ReplicaFetcherBlockingSend.adoc[ReplicaFetcherBlockingSend] is created (with link:kafka-properties.adoc#inter.broker.listener.name[inter.broker.listener.name])
+
+| controlPlaneListenerName
+a| [[controlPlaneListenerName]][[ControlPlaneListenerNameProp]] link:kafka-properties.adoc#control.plane.listener.name[control.plane.listener.name] (based on <<getControlPlaneListenerNameAndSecurityProtocol, getControlPlaneListenerNameAndSecurityProtocol>>)
+
+Used when:
+
+* link:kafka-network-SocketServer.adoc[SocketServer] is created (and creates a dedicated link:kafka-network-SocketServer.adoc#controlPlaneRequestChannelOpt[control-plane request handler for controller-brokers communication] for `KafkaServer`)
+
+* `ControllerChannelManager` is requested to link:kafka-controller-ControllerChannelManager.adoc#addNewBroker[add a new broker]
+
+* `KafkaConfig` is requested for <<controlPlaneListener, controlPlaneListener>> and to <<validateValues, validateValues>>
+
+| leaderImbalanceCheckIntervalSeconds
+a| [[leaderImbalanceCheckIntervalSeconds]][[LeaderImbalanceCheckIntervalSecondsProp]] <<kafka-properties.adoc#leader.imbalance.check.interval.seconds, leader.imbalance.check.interval.seconds>>
+
+Used exclusively when `KafkaController` is requested to <<kafka-controller-KafkaController.adoc#processAutoPreferredReplicaLeaderElection, processAutoPreferredReplicaLeaderElection>>
+
+| leaderImbalancePerBrokerPercentage
+a| [[leaderImbalancePerBrokerPercentage]][[LeaderImbalancePerBrokerPercentageProp]] <<kafka-properties.adoc#leader.imbalance.per.broker.percentage, leader.imbalance.per.broker.percentage>>
+
+Used exclusively when `KafkaController` is requested to <<kafka-controller-KafkaController.adoc#checkAndTriggerAutoLeaderRebalance, checkAndTriggerAutoLeaderRebalance>>
+
+| listeners
+a| [[listeners]][[ListenersProp]] link:kafka-properties.adoc#listeners[listeners] (see <<listeners-method, listeners>>)
+
+| listenerSecurityProtocolMap
+a| [[listenerSecurityProtocolMap]][[ListenerSecurityProtocolMapProp]] <<kafka-properties.adoc#listener.security.protocol.map, listener.security.protocol.map>> (see <<listenerSecurityProtocolMap-method, listenerSecurityProtocolMap>>)
+
+| logCleanerThreads
+a| [[logCleanerThreads]][[LogCleanerThreadsProp]] <<kafka-properties.adoc#log.cleaner.threads, log.cleaner.threads>>
+
+| logCleanerDedupeBufferSize
+a| [[logCleanerDedupeBufferSize]][[LogCleanerDedupeBufferSizeProp]] <<kafka-properties.adoc#log.cleaner.dedupe.buffer.size, log.cleaner.dedupe.buffer.size>>
+
+| logCleanerDedupeBufferLoadFactor
+a| [[logCleanerDedupeBufferLoadFactor]][[LogCleanerDedupeBufferLoadFactorProp]] <<kafka-properties.adoc#log.cleaner.io.buffer.load.factor, log.cleaner.io.buffer.load.factor>>
+
+| logCleanerIoBufferSize
+a| [[logCleanerIoBufferSize]][[LogCleanerIoBufferSizeProp]] <<kafka-properties.adoc#log.cleaner.io.buffer.size, log.cleaner.io.buffer.size>>
+
+| logCleanerIoMaxBytesPerSecond
+a| [[logCleanerIoMaxBytesPerSecond]][[LogCleanerIoMaxBytesPerSecondProp]] <<kafka-properties.adoc#log.cleaner.io.max.bytes.per.second, log.cleaner.io.max.bytes.per.second>>
+
+| logCleanerBackoffMs
+a| [[logCleanerBackoffMs]][[LogCleanerBackoffMsProp]] <<kafka-properties.adoc#log.cleaner.backoff.ms, log.cleaner.backoff.ms>>
+
+| logCleanerDeleteRetentionMs
+a| [[logCleanerDeleteRetentionMs]][[LogCleanerDeleteRetentionMsProp]] log.cleaner.delete.retention.ms
+
+| logCleanerEnable
+a| [[logCleanerEnable]][[LogCleanerEnableProp]] <<kafka-properties.adoc#log.cleaner.enable, log.cleaner.enable>>
+
+Used exclusively when `LogCleaner` utility is requested to <<kafka-log-LogCleaner.adoc#cleanerConfig, build a CleanerConfig from KafkaConfig>>.
+
+| logCleanerMaxCompactionLagMs
+a| [[logCleanerMaxCompactionLagMs]][[LogCleanerMaxCompactionLagMsProp]] log.cleaner.max.compaction.lag.ms
+
+| logCleanerMinCleanRatio
+a| [[logCleanerMinCleanRatio]][[LogCleanerMinCleanRatioProp]] log.cleaner.min.cleanable.ratio
+
+| logCleanerMinCompactionLagMs
+a| [[logCleanerMinCompactionLagMs]][[LogCleanerMinCompactionLagMsProp]] log.cleaner.min.compaction.lag.ms
+
+| logCleanupIntervalMs
+a| [[logCleanupIntervalMs]][[LogCleanupIntervalMsProp]] link:kafka-properties.adoc#log.retention.check.interval.ms[log.retention.check.interval.ms]
+
+Used for link:kafka-log-LogManager.adoc#retentionCheckMs[LogManager] (for the link:kafka-server-scheduled-tasks.adoc#kafka-log-retention[kafka-log-retention] task)
+
+| logCleanupPolicy
+a| [[logCleanupPolicy]][[LogCleanupPolicyProp]] link:kafka-properties.adoc#log.cleanup.policy[log.cleanup.policy]
+
+Used exclusively when `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#copyKafkaConfigToLog, copyKafkaConfigToLog>>
+
+| logDeleteDelayMs
+a| [[logDeleteDelayMs]][[LogDeleteDelayMsProp]] log.segment.delete.delay.ms
+
+| logDirs
+a| [[logDirs]] <<kafka-properties.adoc#log.dirs, log.dirs>> or <<kafka-properties.adoc#log.dir, log.dir>>
+
+At least one log directory must be defined via <<kafka-properties.adoc#log.dirs, log.dirs>> or <<kafka-properties.adoc#log.dir, log.dir>> properties.
+
+Used when:
+
+* `LogManager` is <<kafka-log-LogManager.adoc#logDirs, created>>
+
+* `LogDirFailureChannel` is created (when `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#startup, start up>>)
+
+* `KafkaConfig` is requested to <<getNumReplicaAlterLogDirsThreads, getNumReplicaAlterLogDirsThreads>>
+
+* `KafkaServer` is <<kafka-server-KafkaServer.adoc#brokerMetadataCheckpoints, created>> and is requested to <<kafka-server-KafkaServer.adoc#getBrokerIdAndOfflineDirs, getBrokerIdAndOfflineDirs>> and <<kafka-server-KafkaServer.adoc#checkpointBrokerId, checkpointBrokerId>>
+
+* `ReplicaManager` is requested to <<kafka-server-ReplicaManager.adoc#describeLogDirs, describeLogDirs>>
+
+| logFlushIntervalMessages
+a| [[logFlushIntervalMessages]][[LogFlushIntervalMessagesProp]] link:kafka-properties.adoc#log.flush.interval.messages[log.flush.interval.messages]
+
+Used exclusively when `Log` is requested to <<kafka-log-Log.adoc#append, append records>>
+
+| logFlushIntervalMs
+a| [[logFlushIntervalMs]][[LogFlushIntervalMsProp]] link:kafka-properties.adoc#log.flush.interval.ms[log.flush.interval.ms]
+
+Used exclusively when `KafkaServer` is requested for the <<kafka-server-KafkaServer.adoc#copyKafkaConfigToLog, default log properties>> (and sets the value of <<kafka-log-LogConfig.adoc#FlushMsProp, LogConfig.FlushMsProp>>)
+
+| logIndexIntervalBytes
+a| [[logIndexIntervalBytes]][[LogIndexIntervalBytesProp]] log.index.interval.bytes
+
+| logIndexSizeMaxBytes
+a| [[logIndexSizeMaxBytes]][[LogIndexSizeMaxBytesProp]] link:kafka-properties.adoc#log.index.size.max.bytes[log.index.size.max.bytes]
+
+Used exclusively when `KafkaServer` is requested for the <<kafka-server-KafkaServer.adoc#copyKafkaConfigToLog, default log properties>> (and sets the value of <<kafka-log-LogConfig.adoc#SegmentIndexBytesProp, LogConfig.SegmentIndexBytesProp>>)
+
+| logMessageDownConversionEnable
+a| [[logMessageDownConversionEnable]][[LogMessageDownConversionEnablePro]] log.message.downconversion.enable
+
+| logMessageFormatVersion
+a| [[logMessageFormatVersion]][[LogMessageFormatVersionProp]] log.message.format.version
+
+| logMessageTimestampDifferenceMaxMs
+a| [[logMessageTimestampDifferenceMaxMs]][[LogMessageTimestampDifferenceMaxMsProp]] log.message.timestamp.difference.max.ms
+
+| logMessageTimestampType
+a| [[logMessageTimestampType]][[LogMessageTimestampTypeProp]] log.message.timestamp.type
+
+| logPreAllocateEnable
+a| [[logPreAllocateEnable]][[LogPreAllocateProp]] log.preallocate
+
+| logRetentionBytes
+a| [[logRetentionBytes]][[LogRetentionBytesProp]] link:kafka-properties.adoc#log.retention.bytes[log.retention.bytes]
+
+| logRetentionTimeMillis
+a| [[logRetentionTimeMillis]][[LogRetentionTimeMillisProp]][[LogRetentionTimeMinutesProp]][[LogRetentionTimeHoursProp]] link:kafka-properties.adoc#log.retention.ms[log.retention.ms], link:kafka-properties.adoc#log.retention.minutes[log.retention.minutes], or link:kafka-properties.adoc#log.retention.hours[log.retention.hours] (from the highest to the lowest priority)
+
+| logRollTimeJitterMillis
+a| [[logRollTimeJitterMillis]]
+
+| LogRollTimeHoursProp
+a| [[LogRollTimeHoursProp]]
+
+| LogRollTimeJitterMillisProp
+a| [[LogRollTimeJitterMillisProp]] log.roll.jitter.ms
+
+| LogRollTimeMillisProp
+a| [[LogRollTimeMillisProp]] link:kafka-properties.adoc#log.roll.ms[log.roll.ms]
+
+Default: `null`
+
+Topic-level property (`TopicConfigSynonyms`): <<kafka-common-TopicConfig.adoc#SEGMENT_MS_CONFIG, segment.ms>>
+
+Used when:
+
+* ...
+
+| logSegmentBytes
+a| [[logSegmentBytes]][[LogSegmentBytesProp]] link:kafka-properties.adoc#log.segment.bytes[log.segment.bytes]
+
+Used exclusively when `KafkaServer` is requested for the <<kafka-server-KafkaServer.adoc#copyKafkaConfigToLog, default log properties>> (and sets the value of <<kafka-log-LogConfig.adoc#SegmentBytesProp, LogConfig.SegmentBytesProp>>)
+
+| maxConnectionsPerIp
+a| [[maxConnectionsPerIp]][[MaxConnectionsPerIpProp]] <<kafka-properties.adoc#max.connections.per.ip, max.connections.per.ip>>
+
+Used exclusively when `SocketServer` is requested to <<kafka-network-SocketServer.adoc#startup, start up>>
+
+| maxConnectionsPerIpOverrides
+a| [[maxConnectionsPerIpOverrides]][[MaxConnectionsPerIpOverridesProp]] <<kafka-properties.adoc#max.connections.per.ip.overrides, max.connections.per.ip.overrides>>
+
+Used exclusively when `SocketServer` is requested to <<kafka-network-SocketServer.adoc#startup, start up>>
+
+| maxReservedBrokerId
+a| [[maxReservedBrokerId]] <<kafka-properties.adoc#reserved.broker.max.id, reserved.broker.max.id>>
+
+Used exclusively when `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#generateBrokerId, generateBrokerId>>
+
+| messageMaxBytes
+a| [[messageMaxBytes]][[MessageMaxBytesProp]] link:kafka-properties.adoc#message.max.bytes[message.max.bytes]
+
+| minInSyncReplicas
+a| [[minInSyncReplicas]][[MinInSyncReplicasProp]] link:kafka-properties.adoc#min.insync.replicas[min.insync.replicas]
+
+Used when `KafkaServer` utility is used to link:kafka-server-KafkaServer.adoc#copyKafkaConfigToLog[create a default log properties for LogManager and AdminManager] (and set link:kafka-log-LogConfig.adoc#MinInSyncReplicasProp[MinInSyncReplicasProp])
+
+| numIoThreads
+a| [[numIoThreads]][[NumIoThreadsProp]] <<kafka-properties.adoc#num.io.threads, num.io.threads>>
+
+| numNetworkThreads
+a| [[numNetworkThreads]][[NumNetworkThreadsProp]] <<kafka-properties.adoc#num.network.threads, num.network.threads>>
+
+| numRecoveryThreadsPerDataDir
+a| [[numRecoveryThreadsPerDataDir]][[NumRecoveryThreadsPerDataDirProp]] <<kafka-properties.adoc#num.recovery.threads.per.data.dir, num.recovery.threads.per.data.dir>>
+
+Used when `LogManager` is <<kafka-log-LogManager.adoc#apply, created>>
+
+| <<getNumReplicaAlterLogDirsThreads, getNumReplicaAlterLogDirsThreads>>
+a| [[NumReplicaAlterLogDirsThreadsProp]] link:kafka-properties.adoc#num.replica.alter.log.dirs.threads[num.replica.alter.log.dirs.threads]
+
+| numReplicaFetchers
+a| [[numReplicaFetchers]][[NumReplicaFetchersProp]] link:kafka-properties.adoc#num.replica.fetchers[num.replica.fetchers]
+
+Used to create a link:kafka-server-ReplicaFetcherManager.adoc[ReplicaFetcherManager]
+
+| port
+| [[port]] link:kafka-properties.adoc#port[port]
+
+| PrincipalBuilderClassProp
+| [[PrincipalBuilderClassProp]] <<kafka-properties.adoc#principal.builder.class, principal.builder.class>>
+
+| replicaFetchMaxBytes
+a| [[replicaFetchMaxBytes]][[ReplicaFetchMaxBytesProp]] link:kafka-properties.adoc#replica.fetch.max.bytes[replica.fetch.max.bytes]
+
+Used for `fetchSize` of the link:kafka-server-AbstractFetcherThread.adoc[fetcher threads], i.e. link:kafka-server-ReplicaAlterLogDirsThread.adoc[ReplicaAlterLogDirsThread] and link:kafka-server-ReplicaFetcherThread.adoc[ReplicaFetcherThread]
+
+| replicaFetchResponseMaxBytes
+a| [[replicaFetchResponseMaxBytes]][[ReplicaFetchResponseMaxBytesProp]] link:kafka-properties.adoc#replica.fetch.response.max.bytes[replica.fetch.response.max.bytes]
+
+Used for `maxBytes` of the link:kafka-server-AbstractFetcherThread.adoc[fetcher threads], i.e. link:kafka-server-ReplicaAlterLogDirsThread.adoc[ReplicaAlterLogDirsThread] and link:kafka-server-ReplicaFetcherThread.adoc[ReplicaFetcherThread]
+
+| replicaLagTimeMaxMs
+a| [[replicaLagTimeMaxMs]][[ReplicaLagTimeMaxMsProp]] link:kafka-properties.adoc#replica.lag.time.max.ms[replica.lag.time.max.ms]
+
+Used when:
+
+* `Partition` is link:kafka-cluster-Partition.adoc#apply[created]
+
+* `ReplicaManager` is requested to link:kafka-server-ReplicaManager.adoc#startup[startup] (and starts link:kafka-server-scheduled-tasks.adoc#isr-expiration[isr-expiration]) and link:kafka-server-ReplicaManager.adoc#maybeShrinkIsr[maybeShrinkIsr]
+
+| replicaFetchBackoffMs
+a| [[replicaFetchBackoffMs]][[ReplicaFetchBackoffMsProp]] link:kafka-properties.adoc#replica.fetch.backoff.ms[replica.fetch.backoff.ms]
+
+Used as link:kafka-server-AbstractFetcherThread.adoc#fetchBackOffMs[fetchBackOffMs] for link:kafka-server-ReplicaAlterLogDirsThread.adoc[ReplicaAlterLogDirsThread] and link:kafka-server-ReplicaFetcherThread.adoc[ReplicaFetcherThread]
+
+| replicaSocketTimeoutMs
+a| [[replicaSocketTimeoutMs]][[ReplicaSocketTimeoutMsProp]] link:kafka-properties.adoc#replica.socket.timeout.ms[replica.socket.timeout.ms]
+
+Used when link:kafka-server-ReplicaFetcherBlockingSend.adoc[ReplicaFetcherBlockingSend] is created (for the link:kafka-server-ReplicaFetcherBlockingSend.adoc#socketTimeout[socketTimeout])
+
+| SaslMechanismInterBrokerProtocolProp
+a| [[SaslMechanismInterBrokerProtocolProp]] <<kafka-properties.adoc#sasl.mechanism.inter.broker.protocol, sasl.mechanism.inter.broker.protocol>>
+
+| SaslJaasConfigProp
+a| [[SaslJaasConfigProp]] <<kafka-properties.adoc#sasl.jaas.config, sasl.jaas.config>>
+
+| SaslEnabledMechanismsProp
+a| [[SaslEnabledMechanismsProp]] <<kafka-properties.adoc#sasl.enabled.mechanisms, sasl.enabled.mechanisms>>
+
+| SaslKerberosServiceNameProp
+a| [[SaslKerberosServiceNameProp]] <<kafka-properties.adoc#sasl.kerberos.service.name, sasl.kerberos.service.name>>
+
+| SaslKerberosKinitCmdProp
+a| [[SaslKerberosKinitCmdProp]] <<kafka-properties.adoc#sasl.kerberos.kinit.cmd, sasl.kerberos.kinit.cmd>>
+
+| SaslKerberosTicketRenewWindowFactorProp
+a| [[SaslKerberosTicketRenewWindowFactorProp]] <<kafka-properties.adoc#sasl.kerberos.ticket.renew.window.factor, sasl.kerberos.ticket.renew.window.factor>>
+
+| SaslKerberosTicketRenewJitterProp
+a| [[SaslKerberosTicketRenewJitterProp]] <<kafka-properties.adoc#sasl.kerberos.ticket.renew.jitter, sasl.kerberos.ticket.renew.jitter>>
+
+| SaslKerberosMinTimeBeforeReloginProp
+a| [[SaslKerberosMinTimeBeforeReloginProp]] <<kafka-properties.adoc#sasl.kerberos.min.time.before.relogin, sasl.kerberos.min.time.before.relogin>>
+
+| SaslKerberosPrincipalToLocalRulesProp
+a| [[SaslKerberosPrincipalToLocalRulesProp]] <<kafka-properties.adoc#sasl.kerberos.principal.to.local.rules, sasl.kerberos.principal.to.local.rules>>
+
+| SaslLoginRefreshWindowFactorProp
+a| [[SaslLoginRefreshWindowFactorProp]] <<kafka-properties.adoc#sasl.login.refresh.window.factor, sasl.login.refresh.window.factor>>
+
+| SaslLoginRefreshWindowJitterProp
+a| [[SaslLoginRefreshWindowJitterProp]] <<kafka-properties.adoc#sasl.login.refresh.window.jitter, sasl.login.refresh.window.jitter>>
+
+| SaslLoginRefreshMinPeriodSecondsProp
+a| [[SaslLoginRefreshMinPeriodSecondsProp]] <<kafka-properties.adoc#sasl.login.refresh.min.period.seconds, sasl.login.refresh.min.period.seconds>>
+
+| SaslLoginRefreshBufferSecondsProp
+a| [[SaslLoginRefreshBufferSecondsProp]] <<kafka-properties.adoc#sasl.login.refresh.buffer.seconds, sasl.login.refresh.buffer.seconds>>
+
+| SslProtocolProp
+a| [[SslProtocolProp]] <<kafka-properties.adoc#ssl.protocol, ssl.protocol>>
+
+| SslProviderProp
+a| [[SslProviderProp]] <<kafka-properties.adoc#ssl.provider, ssl.provider>>
+
+| SslCipherSuitesProp
+a| [[SslCipherSuitesProp]] <<kafka-properties.adoc#ssl.cipher.suites, ssl.cipher.suites>>
+
+| SslEnabledProtocolsProp
+a| [[SslEnabledProtocolsProp]] <<kafka-properties.adoc#ssl.enabled.protocols, ssl.enabled.protocols>>
+
+| SslKeystoreTypeProp
+a| [[SslKeystoreTypeProp]] <<kafka-properties.adoc#ssl.keystore.type, ssl.keystore.type>>
+
+| SslKeystoreLocationProp
+a| [[SslKeystoreLocationProp]] <<kafka-properties.adoc#ssl.keystore.location, ssl.keystore.location>>
+
+| SslKeystorePasswordProp
+a| [[SslKeystorePasswordProp]] <<kafka-properties.adoc#ssl.keystore.password, ssl.keystore.password>>
+
+| SslKeyPasswordProp
+a| [[SslKeyPasswordProp]] <<kafka-properties.adoc#ssl.key.password, ssl.key.password>>
+
+| SslPrincipalMappingRulesProp
+a| [[SslPrincipalMappingRulesProp]] link:kafka-properties.adoc#ssl.principal.mapping.rules[ssl.principal.mapping.rules]
+
+| SslTruststoreTypeProp
+a| [[SslTruststoreTypeProp]] <<kafka-properties.adoc#ssl.truststore.type, ssl.truststore.type>>
+
+| SslTruststoreLocationProp
+a| [[SslTruststoreLocationProp]] <<kafka-properties.adoc#ssl.truststore.location, ssl.truststore.location>>
+
+| SslTruststorePasswordProp
+a| [[SslTruststorePasswordProp]] <<kafka-properties.adoc#ssl.truststore.password, ssl.truststore.password>>
+
+| SslKeyManagerAlgorithmProp
+a| [[SslKeyManagerAlgorithmProp]] <<kafka-properties.adoc#ssl.keymanager.algorithm, ssl.keymanager.algorithm>>
+
+| SslTrustManagerAlgorithmProp
+a| [[SslTrustManagerAlgorithmProp]] <<kafka-properties.adoc#ssl.trustmanager.algorithm, ssl.trustmanager.algorithm>>
+
+| SslEndpointIdentificationAlgorithmProp
+a| [[SslEndpointIdentificationAlgorithmProp]] <<kafka-properties.adoc#ssl.endpoint.identification.algorithm, ssl.endpoint.identification.algorithm>>
+
+| SslSecureRandomImplementationProp
+a| [[SslSecureRandomImplementationProp]] <<kafka-properties.adoc#ssl.secure.random.implementation, ssl.secure.random.implementation>>
+
+| SslClientAuthProp
+a| [[SslClientAuthProp]] <<kafka-properties.adoc#ssl.client.auth, ssl.client.auth>>
+
+| socketRequestMaxBytes
+a| [[socketRequestMaxBytes]] <<kafka-properties.adoc#socket.request.max.bytes, socket.request.max.bytes>>
+
+Used when `SocketServer` is <<kafka-network-SocketServer.adoc#memoryPool, created>> and requested to <<kafka-network-SocketServer.adoc#newProcessor, create a new network processor thread>>
+
+| tokenAuthEnabled
+a| [[tokenAuthEnabled]] <<kafka-properties.adoc#delegation.token.master.key, delegation.token.master.key>>
+
+| transactionMaxTimeoutMs
+a| [[transactionMaxTimeoutMs]] <<kafka-properties.adoc#transaction.max.timeout.ms, transaction.max.timeout.ms>>
+
+Used exclusively when <<kafka-TransactionCoordinator.adoc#, TransactionCoordinator>> is created
+
+| uncleanLeaderElectionEnable
+a| [[uncleanLeaderElectionEnable]][[UncleanLeaderElectionEnableProp]] link:kafka-properties.adoc#unclean.leader.election.enable[unclean.leader.election.enable]
+
+Default: `false`
+
+Topic-level property: link:kafka-log-LogConfig.adoc#unclean.leader.election.enable[unclean.leader.election.enable]
+
+Used when:
+
+* `TopicConfigHandler` is requested to link:kafka-server-TopicConfigHandler.adoc#processConfigChanges[process configuration changes] (for `unclean.leader.election.enable` configuration property that triggers the `KafkaController` to link:kafka-controller-KafkaController.adoc#enableDefaultUncleanLeaderElection[enableDefaultUncleanLeaderElection])
+
+| queuedMaxRequests
+a| [[queuedMaxRequests]] <<kafka-properties.adoc#queued.max.requests, queued.max.requests>>
+
+Used exclusively when `SocketServer` is <<kafka-network-SocketServer.adoc#maxQueuedRequests, created>>
+
+| zkConnect
+a| [[zkConnect]] <<kafka-properties.adoc#zookeeper.connect, zookeeper.connect>>
+
+Used when:
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#initZkClient, initZkClient>>
+
+* FIXME
+
+| zkConnectionTimeoutMs
+a| [[zkConnectionTimeoutMs]] <<kafka-properties.adoc#zookeeper.connection.timeout.ms, zookeeper.connection.timeout.ms>> when set or <<kafka-properties.adoc#zookeeper.session.timeout.ms, zookeeper.session.timeout.ms>>
+
+Used when:
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#initZkClient, initZkClient>>
+
+* FIXME
+
+| zkEnableSecureAcls
+a| [[zkEnableSecureAcls]] <<kafka-properties.adoc#zookeeper.set.acl, zookeeper.set.acl>>
+
+Used when:
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#initZkClient, initZkClient>>
+
+* FIXME
+
+| zkMaxInFlightRequests
+a| [[zkMaxInFlightRequests]] <<kafka-properties.adoc#zookeeper.max.in.flight.requests, zookeeper.max.in.flight.requests>>
+
+Used when:
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#initZkClient, initZkClient>>
+
+* FIXME
+
+| zkSessionTimeoutMs
+a| [[zkSessionTimeoutMs]] <<kafka-properties.adoc#zookeeper.session.timeout.ms, zookeeper.session.timeout.ms>>
+
+Used when:
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#initZkClient, initZkClient>>
+
+* FIXME
+
+|===
+
+=== [[authorizer]] `authorizer` Method
+
+[source, scala]
+----
+authorizer: Option[Authorizer]
+----
+
+`authorizer` takes the value of <<AuthorizerClassNameProp, KafkaConfig.AuthorizerClassNameProp>> property.
+
+If defined, `authorizer` creates an instance and returns it as an link:kafka-server-authorizer-Authorizer.adoc[Authorizer] (or a link:kafka-security-authorizer-AuthorizerWrapper.adoc[AuthorizerWrapper] for the deprecated `kafka.security.auth.Authorizer` API). Otherwise, `authorizer` returns `None`.
+
+`authorizer` throws a `ConfigException` for unsupported `Authorizer` API:
+
+```
+Authorizer does not implement org.apache.kafka.server.authorizer.Authorizer or kafka.security.auth.Authorizer .
+```
+
+NOTE: `authorizer` is used when `KafkaServer` is requested to link:kafka-server-KafkaServer.adoc#startup[start up].
+
+=== [[listeners-method]] `listeners` Method
+
+[source, scala]
+----
+listeners: Seq[EndPoint]
+----
+
+`listeners` creates the `EndPoints` based on link:kafka-properties.adoc#listeners[listeners] configuration property if defined. Otherwise, `listeners` assumes `PLAINTEXT://[hostName]:[port]` (per <<hostName, hostName>> and <<port, port>>).
+
+`listeners` uses <<listenerSecurityProtocolMap, listenerSecurityProtocolMap>> for protocol mapping.
+
+[NOTE]
+====
+`listeners` is used when:
+
+* `SocketServer` is requested for the link:kafka-network-SocketServer.adoc#endpoints[endpoints] and link:kafka-network-SocketServer.adoc#protectedListener[protectedListener]
+
+* `DynamicListenerConfig` is requested to link:kafka-server-DynamicListenerConfig.adoc#validateReconfiguration[validateReconfiguration] and link:kafka-server-DynamicListenerConfig.adoc#reconfigure[reconfigure]
+
+* `KafkaConfig` is requested for the <<controlPlaneListener, controlPlaneListener>>, <<dataPlaneListeners, dataPlaneListeners>>, <<advertisedListeners, advertisedListeners>>, and <<validateValues, validateValues>>
+====
+
+=== [[advertisedListeners-method]] `advertisedListeners` Method
+
+[source, scala]
+----
+advertisedListeners: Seq[EndPoint]
+----
+
+`advertisedListeners`...FIXME
+
+NOTE: `advertisedListeners` is used when...FIXME
+
+=== [[listenerSecurityProtocolMap-method]] `listenerSecurityProtocolMap` Method
+
+[source, scala]
+----
+listenerSecurityProtocolMap: Map[ListenerName, SecurityProtocol]
+----
+
+`listenerSecurityProtocolMap`...FIXME
+
+NOTE: `listenerSecurityProtocolMap` is used when...FIXME
+
+=== [[getNumReplicaAlterLogDirsThreads]] `getNumReplicaAlterLogDirsThreads` Method
+
+[source, scala]
+----
+getNumReplicaAlterLogDirsThreads: Int
+----
+
+`getNumReplicaAlterLogDirsThreads` is link:kafka-properties.adoc#num.replica.alter.log.dirs.threads[num.replica.alter.log.dirs.threads] if defined or the number of <<logDirs, log directories>>.
+
+NOTE: `getNumReplicaAlterLogDirsThreads` is used when link:kafka-server-ReplicaAlterLogDirsManager.adoc[ReplicaAlterLogDirsManager] is created.
+
+=== [[creating-instance]] Creating KafkaConfig Instance
+
+`KafkaConfig` takes the following to be created:
+
+* [[props]] Key-value properties
+* [[doLog]] `doLog` flag
+* [[dynamicConfigOverride]] <<kafka-server-DynamicBrokerConfig.adoc#, DynamicBrokerConfig>>
+
+`KafkaConfig` initializes the <<internal-properties, internal properties>>.
+
+=== [[fromProps]] Creating KafkaConfig From Java Properties -- `fromProps` Object Method
+
+[source, scala]
+----
+fromProps(props: Properties): KafkaConfig // <1>
+fromProps(props: Properties, doLog: Boolean): KafkaConfig
+fromProps(defaults: Properties, overrides: Properties): KafkaConfig // <2>
+fromProps(defaults: Properties, overrides: Properties, doLog: Boolean): KafkaConfig // <3>
+----
+<1> Seems to be used in tests only
+<2> Seems to be used in tests only
+<3> Seems to be used in tests only
+
+`fromProps`...FIXME
+
+[NOTE]
+====
+`fromProps` is used when:
+
+* `KafkaServerStartable` is requested to <<kafka-KafkaServerStartable.adoc#fromProps, create a KafkaServerStartable from Java Properties>>
+
+* `SimpleAclAuthorizer` is requested to `configure` itself
+====
+
+=== [[apply]] Creating KafkaConfig -- `apply` Factory Method
+
+[source, scala]
+----
+apply(props: java.util.Map[_, _]): KafkaConfig
+----
+
+`apply` simply creates a <<creating-instance, KafkaConfig>> with the `props` and the <<doLog, doLog>> flag on.
+
+NOTE: `apply` seems to be used in tests only.
+
+=== [[addReconfigurable]] Adding Reconfigurable to DynamicBrokerConfig -- `addReconfigurable` Method
+
+[source, scala]
+----
+addReconfigurable(
+  reconfigurable: Reconfigurable): Unit
+----
+
+`addReconfigurable` simply requests the <<dynamicConfig, DynamicBrokerConfig>> to link:kafka-server-DynamicBrokerConfig.adoc#addReconfigurable[add the Reconfigurable].
+
+[NOTE]
+====
+`addReconfigurable` is used when:
+
+* `ControllerChannelManager` is requested to link:kafka-controller-ControllerChannelManager.adoc#addNewBroker[register a new broker] (and adds a link:kafka-common-network-ChannelBuilder.adoc[ChannelBuilder])
+
+* link:kafka-TransactionMarkerChannelManager.adoc#apply[TransactionMarkerChannelManager] is created (and adds a link:kafka-common-network-ChannelBuilder.adoc[ChannelBuilder])
+
+* link:kafka-network-SocketServer-Processor.adoc[Processor] is created (and link:kafka-network-SocketServer-Processor.adoc#createSelector[creates a Selector] that in turn adds a link:kafka-common-network-ChannelBuilder.adoc[ChannelBuilder])
+
+* `ConnectionQuotas` is requested to `addListener`
+
+* link:kafka-server-ReplicaFetcherBlockingSend.adoc[ReplicaFetcherBlockingSend] is created (and creates a link:kafka-server-ReplicaFetcherBlockingSend.adoc#networkClient[NetworkClient] that in turn adds a link:kafka-common-network-ChannelBuilder.adoc[ChannelBuilder])
+====
+
+=== [[controlPlaneListener]] `controlPlaneListener` Method
+
+[source, scala]
+----
+controlPlaneListener: Option[EndPoint]
+----
+
+`controlPlaneListener`...FIXME
+
+NOTE: `controlPlaneListener` is used when...FIXME
+
+=== [[dataPlaneListeners]] `dataPlaneListeners` Method
+
+[source, scala]
+----
+dataPlaneListeners: Seq[EndPoint]
+----
+
+`dataPlaneListeners`...FIXME
+
+NOTE: `dataPlaneListeners` is used when...FIXME
+
+=== [[validateValues]] `validateValues` Internal Method
+
+[source, scala]
+----
+validateValues(): Unit
+----
+
+`validateValues`...FIXME
+
+NOTE: `validateValues` is used when `KafkaConfig` is <<creating-instance, created>>.
+
+=== [[getInterBrokerListenerNameAndSecurityProtocol]] `getInterBrokerListenerNameAndSecurityProtocol` Internal Method
+
+[source, scala]
+----
+getInterBrokerListenerNameAndSecurityProtocol: (ListenerName, SecurityProtocol)
+----
+
+`getInterBrokerListenerNameAndSecurityProtocol`...FIXME
+
+NOTE: `getInterBrokerListenerNameAndSecurityProtocol` is used when `KafkaConfig` is requested for <<interBrokerListenerName, interBrokerListenerName>> and <<interBrokerSecurityProtocol, interBrokerSecurityProtocol>>.
+
+=== [[logRollTimeMillis]] `logRollTimeMillis` Method
+
+[source, scala]
+----
+logRollTimeMillis: java.lang.Long
+----
+
+`logRollTimeMillis` is either the value of <<LogRollTimeMillisProp, log.roll.ms>> or <<LogRollTimeHoursProp, log.roll.hours>> (converted to millis).
+
+NOTE: `logRollTimeMillis` is used when `KafkaServer` utility is used to <<kafka-server-KafkaServer.adoc#copyKafkaConfigToLog, copyKafkaConfigToLog>> (and set the topic-level <<kafka-log-LogConfig.adoc#SegmentMsProp, segment.ms>>).
+
+=== [[controlPlaneSecurityProtocol]] Security Protocol for Controller-Brokers Communication -- `controlPlaneSecurityProtocol` Method
+
+[source, scala]
+----
+controlPlaneSecurityProtocol: Option[SecurityProtocol]
+----
+
+`controlPlaneSecurityProtocol` is the name of the security protocol based on link:kafka-properties.adoc#control.plane.listener.name[control.plane.listener.name] and link:kafka-properties.adoc#listener.security.protocol.map[listener.security.protocol.map] configuration properties (via <<getControlPlaneListenerNameAndSecurityProtocol, getControlPlaneListenerNameAndSecurityProtocol>>).
+
+NOTE: `controlPlaneSecurityProtocol` is used when `ControllerChannelManager` is requested to link:kafka-controller-ControllerChannelManager.adoc#addNewBroker[add a new broker].
+
+=== [[getControlPlaneListenerNameAndSecurityProtocol]] `getControlPlaneListenerNameAndSecurityProtocol` Internal Method
+
+[source, scala]
+----
+getControlPlaneListenerNameAndSecurityProtocol: Option[(ListenerName, SecurityProtocol)]
+----
+
+`getControlPlaneListenerNameAndSecurityProtocol` uses the <<ControlPlaneListenerNameProp, control.plane.listener.name>> property for the listener name and looks it up in the <<listenerSecurityProtocolMap, listener.security.protocol.map>> for the security protocol.
+
+`getControlPlaneListenerNameAndSecurityProtocol` returns `None` when the <<ControlPlaneListenerNameProp, control.plane.listener.name>> property is not defined.
+
+`getControlPlaneListenerNameAndSecurityProtocol` throws a `ConfigException` when the listener name could not be found:
+
+```
+Listener with [listenerName] defined in control.plane.listener.name not found in listener.security.protocol.map.
+```
+
+NOTE: `getControlPlaneListenerNameAndSecurityProtocol` is used when `KafkaConfig` is requested for the <<controlPlaneListenerName, controlPlaneListenerName>> and <<controlPlaneSecurityProtocol, controlPlaneSecurityProtocol>>.
+
+=== [[internal-properties]] Internal Properties
+
+[cols="30m,70",options="header",width="100%"]
+|===
+| Name
+| Description
+
+| dynamicConfig
+a| [[dynamicConfig]] <<kafka-server-DynamicBrokerConfig.adoc#, DynamicBrokerConfig>> (that could be <<dynamicConfigOverride, provided>> or will be <<kafka-server-DynamicBrokerConfig.adoc#creating-instance, created from scratch>>)
+
+Used when:
+
+* `AdminManager` is requested to <<kafka-server-AdminManager.adoc#describeConfigs, describeConfigs>> (for `BROKER` resources), <<kafka-server-AdminManager.adoc#alterConfigs, alterConfigs>> and <<kafka-server-AdminManager.adoc#configSynonyms, configSynonyms>>
+
+* `BrokerConfigHandler` is requested to <<kafka-server-BrokerConfigHandler.adoc#processConfigChanges, processConfigChanges>>
+
+* `DynamicMetricsReporters` is <<kafka-server-DynamicMetricsReporters.adoc#dynamicConfig, created>>
+
+* `DynamicClientQuotaCallback` is <<kafka-server-DynamicClientQuotaCallback.adoc#reconfigure, reconfigure>>
+
+* `KafkaConfig` is requested to <<addReconfigurable, addReconfigurable>>
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#startup, start up>>
+
+|===

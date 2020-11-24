@@ -1,0 +1,249 @@
+== [[KafkaClient]] KafkaClient
+
+`KafkaClient` is the <<contract, abstraction>> of <<implementations, Kafka clients>>.
+
+[[implementations]]
+NOTE: <<kafka-clients-NetworkClient.adoc#, NetworkClient>> is the one and only known implementation of the <<contract, KafkaClient Contract>> in Apache Kafka.
+
+[[contract]]
+.KafkaClient Contract
+[cols="30m,70",options="header",width="100%"]
+|===
+| Method
+| Description
+
+| authenticationException
+a| [[authenticationException]]
+
+[source, java]
+----
+AuthenticationException authenticationException(Node node)
+----
+
+Used when...FIXME
+
+| close
+a| [[close]]
+
+[source, java]
+----
+void close(String nodeId)
+----
+
+Closing the Kafka client (releasing resources)
+
+Used when:
+
+* `RequestSendThread` is requested to `doWork` and `brokerReady`
+
+* `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#controlledShutdown, controlledShutdown>>
+
+* `ReplicaFetcherBlockingSend` is requested to <<kafka-server-ReplicaFetcherBlockingSend.adoc#sendRequest, send a client request and wait for a response>>
+
+| connectionDelay
+a| [[connectionDelay]]
+
+[source, java]
+----
+long connectionDelay(Node node, long now)
+----
+
+Used when...FIXME
+
+| connectionFailed
+a| [[connectionFailed]]
+
+[source, java]
+----
+boolean connectionFailed(Node node)
+----
+
+Used when...FIXME
+
+| disconnect
+a| [[disconnect]]
+
+[source, java]
+----
+void disconnect(String nodeId)
+----
+
+Used when:
+
+* `AdminClientRunnable` is requested to <<kafka-clients-admin-KafkaAdminClient-AdminClientRunnable.adoc#timeoutCallsInFlight, timeoutCallsInFlight>> and <<kafka-clients-admin-KafkaAdminClient-AdminClientRunnable.adoc#handleResponses, handleResponses>>
+
+* `ConsumerNetworkClient` is requested to <<kafka-consumer-internals-ConsumerNetworkClient.adoc#handlePendingDisconnects, handlePendingDisconnects>>
+
+| hasInFlightRequests
+a| [[hasInFlightRequests]]
+
+[source, java]
+----
+boolean hasInFlightRequests()
+boolean hasInFlightRequests(String nodeId);
+----
+
+Used when...FIXME
+
+| hasReadyNodes
+a| [[hasReadyNodes]]
+
+[source, java]
+----
+boolean hasReadyNodes(long now)
+----
+
+Used when...FIXME
+
+| inFlightRequestCount
+a| [[inFlightRequestCount]]
+
+[source, java]
+----
+int inFlightRequestCount()
+int inFlightRequestCount(String nodeId)
+----
+
+Used when...FIXME
+
+| isReady
+a| [[isReady]]
+
+[source, java]
+----
+boolean isReady(Node node, long now)
+----
+
+Used when:
+
+* `NetworkClient` is requested to <<kafka-clients-NetworkClient.adoc#ready, ready>> and <<kafka-clients-NetworkClient.adoc#leastLoadedNode, leastLoadedNode>>
+
+* `NetworkClientUtils` is requested to <<kafka-clients-NetworkClientUtils.adoc#isReady, isReady>> and <<kafka-clients-NetworkClientUtils.adoc#awaitReady, wait until a connection to a broker node is ready>>
+
+| leastLoadedNode
+a| [[leastLoadedNode]]
+
+[source, java]
+----
+Node leastLoadedNode(long now)
+----
+
+Used when:
+
+* `DefaultMetadataUpdater` is requested to <<kafka-clients-DefaultMetadataUpdater.adoc#maybeUpdate, maybeUpdate>>
+
+* `ConsumerNetworkClient` is requested to <<kafka-consumer-internals-ConsumerNetworkClient.adoc#leastLoadedNode, leastLoadedNode>>
+
+* `Sender` is requested to <<kafka-producer-internals-Sender.adoc#awaitLeastLoadedNodeReady, awaitLeastLoadedNodeReady>>
+
+* `LeastLoadedNodeProvider` and `MetadataUpdateNodeIdProvider` are requested to provide the least-loaded node
+
+| newClientRequest
+a| [[newClientRequest]]
+
+[source, java]
+----
+ClientRequest newClientRequest(
+  String nodeId,
+  AbstractRequest.Builder<?> requestBuilder,
+  long createdTimeMs,
+  boolean expectResponse)
+ClientRequest newClientRequest(
+  String nodeId,
+  AbstractRequest.Builder<?> requestBuilder,
+  long createdTimeMs,
+  boolean expectResponse,
+  int requestTimeoutMs,
+  RequestCompletionHandler callback)
+----
+
+Creates a new <<kafka-clients-ClientRequest.adoc#, ClientRequest>> for a given <<kafka-common-requests-AbstractRequest-Builder.adoc#, AbstractRequest.Builder>> and <<kafka-clients-RequestCompletionHandler.adoc#, RequestCompletionHandler>>
+
+Used when...FIXME
+
+| poll
+a| [[poll]]
+
+[source, java]
+----
+List<ClientResponse> poll(
+  long timeout,
+  long now)
+----
+
+Used when:
+
+* `InterBrokerSendThread` thread is link:kafka-InterBrokerSendThread.adoc#doWork[started]
+
+* `NetworkClientUtils` utility is used to link:kafka-clients-NetworkClientUtils.adoc#isReady[isReady], link:kafka-clients-NetworkClientUtils.adoc#awaitReady[awaitReady] and link:kafka-clients-NetworkClientUtils.adoc#sendAndReceive[sendAndReceive]
+
+* `AdminClientRunnable` thread is link:kafka-clients-admin-KafkaAdminClient-AdminClientRunnable.adoc#run[started]
+
+* `ConsumerNetworkClient` is requested to link:kafka-consumer-internals-ConsumerNetworkClient.adoc#poll[poll] and link:kafka-consumer-internals-ConsumerNetworkClient.adoc#transmitSends[transmitSends]
+
+* `Sender` thread is link:kafka-producer-internals-Sender.adoc#run[started] (and link:kafka-producer-internals-Sender.adoc#runOnce[runOnce] and link:kafka-producer-internals-Sender.adoc#maybeSendAndPollTransactionalRequest[maybeSendAndPollTransactionalRequest])
+
+| pollDelayMs
+a| [[pollDelayMs]]
+
+[source, java]
+----
+long pollDelayMs(Node node, long now)
+----
+
+Used when...FIXME
+
+| ready
+a| [[ready]]
+
+[source, java]
+----
+boolean ready(Node node, long now)
+----
+
+Initiates a connection to the given broker `Node` (i.e. a connection to a broker node is ready)
+
+Used when:
+
+* `NetworkClientUtils` helper object is requested to <<kafka-clients-NetworkClientUtils.adoc#awaitReady, wait until a connection to a broker node is ready>>
+
+* `AdminClientRunnable` is requested to <<kafka-clients-admin-KafkaAdminClient-AdminClientRunnable.adoc#sendEligibleCalls, sendEligibleCalls>>
+
+* `ConsumerNetworkClient` is requested to <<kafka-consumer-internals-ConsumerNetworkClient.adoc#trySend, trySend>> and <<kafka-consumer-internals-ConsumerNetworkClient.adoc#tryConnect, tryConnect>>
+
+* `Sender` is requested to <<kafka-producer-internals-Sender.adoc#sendProducerData, sendProducerData>> (when requested to <<kafka-producer-internals-Sender.adoc#run-millis, run a single iteration of sending>>)
+
+* `InterBrokerSendThread` is requested to <<kafka-InterBrokerSendThread.adoc#sendRequests, sendRequests>>
+
+| send
+a| [[send]]
+
+[source, java]
+----
+void send(ClientRequest request, long now)
+----
+
+Queues up the <<kafka-clients-ClientRequest.adoc#, ClientRequest>> for sending
+
+Used when:
+
+* `InterBrokerSendThread` is requested to <<kafka-InterBrokerSendThread.adoc#sendRequests, sendRequests>>
+
+* `NetworkClientUtils` is requested to <<kafka-clients-NetworkClientUtils.adoc#sendAndReceive, sendAndReceive>>
+
+* `AdminClientRunnable` is requested to `sendEligibleCalls`
+
+* `ConsumerNetworkClient` is requested to <<kafka-consumer-internals-ConsumerNetworkClient.adoc#trySend, trySend>>
+
+* `Sender` is requested to <<kafka-producer-internals-Sender.adoc#maybeSendTransactionalRequest, maybeSendTransactionalRequest>> and <<kafka-producer-internals-Sender.adoc#sendProduceRequest, sendProduceRequest>>
+
+| wakeup
+a| [[wakeup]]
+
+[source, java]
+----
+void wakeup()
+----
+
+Used when...FIXME
+|===

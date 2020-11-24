@@ -1,0 +1,93 @@
+== [[TransactionCoordinator]] TransactionCoordinator
+
+`TransactionCoordinator` is...FIXME
+
+`TransactionCoordinator` is <<creating-instance, created>> when...FIXME
+
+=== [[startup]] `startup` Method
+
+[source, scala]
+----
+startup
+----
+
+`startup`...FIXME
+
+NOTE: `startup` is used exclusively when `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#startup, start up>>.
+
+=== [[creating-instance]] Creating TransactionCoordinator Instance
+
+`TransactionCoordinator` takes the following when created:
+
+* [[brokerId]] Broker ID
+* [[txnConfig]] `TransactionConfig`
+* [[scheduler]] <<kafka-Scheduler.adoc#, Scheduler>>
+* [[producerIdManager]] `ProducerIdManager`
+* [[txnManager]] <<kafka-TransactionStateManager.adoc#, TransactionStateManager>>
+* [[txnMarkerChannelManager]] `TransactionMarkerChannelManager`
+* [[time]] `Time`
+* [[logContext]] `LogContext`
+
+`TransactionCoordinator` initializes the <<internal-registries, internal registries and counters>>.
+
+=== [[apply]] Creating TransactionCoordinator -- `apply` Factory Method
+
+[source, scala]
+----
+apply(
+  config: KafkaConfig,
+  replicaManager: ReplicaManager,
+  scheduler: Scheduler,
+  zkClient: KafkaZkClient,
+  metrics: Metrics,
+  metadataCache: MetadataCache,
+  time: Time): TransactionCoordinator
+----
+
+`apply`...FIXME
+
+NOTE: `apply` is used exclusively when `KafkaServer` is requested to <<kafka-server-KafkaServer.adoc#startup, start up>> (to create a <<kafka-server-KafkaServer.adoc#transactionCoordinator, TransactionCoordinator>>).
+
+=== [[shutdown]] `shutdown` Method
+
+[source, scala]
+----
+shutdown(): Unit
+----
+
+`shutdown`...FIXME
+
+NOTE: `shutdown` is used when...FIXME
+
+=== [[abortTimedOutTransactions]] `abortTimedOutTransactions` Internal Method
+
+[source, scala]
+----
+abortTimedOutTransactions(): Unit
+----
+
+`abortTimedOutTransactions`...FIXME
+
+NOTE: `abortTimedOutTransactions` is used when...FIXME
+
+=== [[partitionFor]] `partitionFor` Method
+
+[source, scala]
+----
+partitionFor(transactionalId: String): Int
+----
+
+`partitionFor`...FIXME
+
+NOTE: `partitionFor` is used when...FIXME
+
+=== [[transactionTopicConfigs]] `transactionTopicConfigs` Method
+
+[source, scala]
+----
+transactionTopicConfigs: Properties
+----
+
+`transactionTopicConfigs`...FIXME
+
+NOTE: `transactionTopicConfigs` is used when `KafkaApis` is requested to link:kafka-server-KafkaApis.adoc#createInternalTopic[create __transaction_state internal topic].

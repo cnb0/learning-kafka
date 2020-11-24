@@ -1,0 +1,127 @@
+== [[MetadataUpdater]] MetadataUpdater Contract
+
+`MetadataUpdater` is an <<contract, abstraction>> of <<implementations, metadata updaters>> that are used by link:kafka-clients-NetworkClient.adoc[NetworkClient] to <<handleCompletedMetadataResponse, handle completed metadata responses>>.
+
+[[contract]]
+.MetadataUpdater Contract
+[cols="30m,70",options="header",width="100%"]
+|===
+| Method
+| Description
+
+| close
+a| [[close]]
+
+[source, java]
+----
+void close()
+----
+
+Closes the metadata updater
+
+| fetchNodes
+a| [[fetchNodes]]
+
+[source, java]
+----
+List<Node> fetchNodes()
+----
+
+Used when:
+
+* `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#leastLoadedNode[leastLoadedNode]
+
+* `DefaultMetadataUpdater` (of `NetworkClient`) is requested to link:kafka-clients-DefaultMetadataUpdater.adoc#isAnyNodeConnecting[isAnyNodeConnecting]
+
+| handleCompletedMetadataResponse
+a| [[handleCompletedMetadataResponse]]
+
+[source, java]
+----
+void handleCompletedMetadataResponse(
+  RequestHeader requestHeader,
+  long now,
+  MetadataResponse metadataResponse)
+----
+
+Handles a link:kafka-common-requests-MetadataResponse.adoc[response] to a link:kafka-common-requests-MetadataRequest.adoc[metadata request]
+
+Used when `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#handleCompletedReceives[handle a completed MetadataResponse]
+
+| handleDisconnection
+a| [[handleDisconnection]]
+
+[source, java]
+----
+void handleDisconnection(
+  String destination)
+----
+
+Used when `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#disconnect[disconnect], link:kafka-clients-NetworkClient.adoc#close[close], and link:kafka-clients-NetworkClient.adoc#processDisconnection[processDisconnection]
+
+| handleFatalException
+a| [[handleFatalException]]
+
+[source, java]
+----
+void handleFatalException(
+  KafkaException fatalException)
+----
+
+Used when `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#doSend[doSend] and link:kafka-clients-NetworkClient.adoc#processDisconnection[processDisconnection]
+
+| isUpdateDue
+a| [[isUpdateDue]]
+
+[source, java]
+----
+boolean isUpdateDue(
+  long now)
+----
+
+Used when `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#isReady[isReady]
+
+| maybeUpdate
+a| [[maybeUpdate]]
+
+[source, java]
+----
+long maybeUpdate(
+  long now)
+----
+
+Starts a cluster metadata update if needed and possible.
+
+Used when `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#poll[read and write to sockets].
+
+| requestUpdate
+a| [[requestUpdate]]
+
+[source, java]
+----
+void requestUpdate()
+----
+
+Schedules an update of the current cluster metadata
+
+Used when `NetworkClient` is requested to link:kafka-clients-NetworkClient.adoc#handleTimedOutRequests[handleTimedOutRequests], link:kafka-clients-NetworkClient.adoc#handleDisconnections[handleDisconnections] and link:kafka-clients-NetworkClient.adoc#initiateConnect[establish a connection to a broker node]
+
+|===
+
+[[implementations]]
+.MetadataUpdaters
+[cols="30,70",options="header",width="100%"]
+|===
+| MetadataUpdater
+| Description
+
+| AdminMetadataUpdater
+a| [[AdminMetadataUpdater]] Used by link:kafka-clients-admin-internals-AdminMetadataManager.adoc[AdminMetadataManager]
+
+| link:kafka-clients-DefaultMetadataUpdater.adoc[DefaultMetadataUpdater]
+a| [[DefaultMetadataUpdater]] Default `MetadataUpdater` of link:kafka-clients-NetworkClient.adoc[NetworkClient]
+
+| ManualMetadataUpdater
+a| [[ManualMetadataUpdater]] Used by link:kafka-controller-ControllerChannelManager.adoc[ControllerChannelManager], link:kafka-TransactionMarkerChannelManager.adoc[TransactionMarkerChannelManager], link:kafka-server-KafkaServer.adoc[KafkaServer] and link:kafka-server-ReplicaFetcherBlockingSend.adoc[ReplicaFetcherBlockingSend]
+
+|===

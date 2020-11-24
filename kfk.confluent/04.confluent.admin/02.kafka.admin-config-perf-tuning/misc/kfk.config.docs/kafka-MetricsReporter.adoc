@@ -1,0 +1,5 @@
+== MetricsReporter
+
+=== [[JmxReporter]] JmxReporter
+
+`JmxReporter` is a metrics reporter that is always included in link:kafka-properties.adoc#metric_reporters[metric.reporters] setting with `kafka.consumer` metrics prefix.

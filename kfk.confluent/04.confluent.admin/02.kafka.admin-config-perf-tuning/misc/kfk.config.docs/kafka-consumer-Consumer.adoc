@@ -1,0 +1,271 @@
+== [[Consumer]] Consumer Contract -- Kafka Clients for Consuming Records
+
+`Consumer` is the <<contract, abstraction>> of <<implementations, Kafka clients>> that can <<subscribe, subscribe to topics>> or <<assign, assign partitions>> to consume records from.
+
+`Consumer` is also a Java https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/Closeable.html[java.io.Closeable] and so can be considered as a _"a source of data that can be closed"_. A `Consumer` instance should always be <<close, closed>> to release system resources.
+
+[[contract]]
+.Consumer Contract
+[cols="1m,3",options="header",width="100%"]
+|===
+| Method
+| Description
+
+| assign
+a| [[assign]]
+
+[source, java]
+----
+void assign(Collection<TopicPartition> partitions)
+----
+
+| assignment
+a| [[assignment]]
+
+[source, java]
+----
+Set<TopicPartition> assignment()
+----
+
+| beginningOffsets
+a| [[beginningOffsets]]
+
+[source, java]
+----
+Map<TopicPartition, Long> beginningOffsets(
+  Collection<TopicPartition> partitions)
+Map<TopicPartition, Long> beginningOffsets(
+  Collection<TopicPartition> partitions,
+  Duration timeout)
+----
+
+| close
+a| [[close]]
+
+[source, java]
+----
+void close()
+void close(Duration timeout)
+----
+
+Closes the `Consumer` to release system resources used
+
+| commitAsync
+a| [[commitAsync]]
+
+[source, java]
+----
+void commitAsync()
+void commitAsync(
+  Map<TopicPartition, OffsetAndMetadata> offsets,
+  OffsetCommitCallback callback)
+void commitAsync(
+  OffsetCommitCallback callback)
+----
+
+| commitSync
+a| [[commitSync]]
+
+[source, java]
+----
+void commitSync()
+void commitSync(
+  Duration timeout)
+void commitSync(
+  Map<TopicPartition, OffsetAndMetadata> offsets)
+void commitSync(
+  Map<TopicPartition, OffsetAndMetadata> offsets,
+  Duration timeout)
+----
+
+| committed
+a| [[committed]]
+
+[source, java]
+----
+OffsetAndMetadata committed(
+  TopicPartition partition)
+OffsetAndMetadata committed(
+  TopicPartition partition,
+  Duration timeout)
+----
+
+| endOffsets
+a| [[endOffsets]]
+
+[source, java]
+----
+Map<TopicPartition, Long> endOffsets(
+  Collection<TopicPartition> partitions)
+Map<TopicPartition, Long> endOffsets(
+  Collection<TopicPartition> partitions,
+  Duration timeout)
+----
+
+| listTopics
+a| [[listTopics]]
+
+[source, java]
+----
+Map<String, List<PartitionInfo>> listTopics()
+Map<String, List<PartitionInfo>> listTopics(
+  Duration timeout)
+----
+
+| metrics
+a| [[metrics]]
+
+[source, java]
+----
+Map<MetricName, ? extends Metric> metrics()
+----
+
+| offsetsForTimes
+a| [[offsetsForTimes]]
+
+[source, java]
+----
+Map<TopicPartition, OffsetAndTimestamp> offsetsForTimes(
+  Map<TopicPartition, Long> timestampsToSearch)
+Map<TopicPartition, OffsetAndTimestamp> offsetsForTimes(
+  Map<TopicPartition, Long> timestampsToSearch,
+  Duration timeout)
+----
+
+| partitionsFor
+a| [[partitionsFor]]
+
+[source, java]
+----
+List<PartitionInfo> partitionsFor(
+  String topic)
+List<PartitionInfo> partitionsFor(
+  String topic,
+  Duration timeout)
+----
+
+| pause
+a| [[pause]]
+
+[source, java]
+----
+void pause(Collection<TopicPartition> partitions)
+----
+
+| paused
+a| [[paused]]
+
+[source, java]
+----
+Set<TopicPartition> paused()
+----
+
+| poll
+a| [[poll]]
+
+[source, java]
+----
+ConsumerRecords<K, V> poll(Duration timeout)
+----
+
+| position
+a| [[position]]
+
+[source, java]
+----
+long position(
+  TopicPartition partition)
+long position(
+  TopicPartition partition,
+  Duration timeout)
+----
+
+| resume
+a| [[resume]]
+
+[source, java]
+----
+void resume(Collection<TopicPartition> partitions)
+----
+
+| seek
+a| [[seek]]
+
+[source, java]
+----
+void seek(TopicPartition partition, long offset)
+----
+
+| seekToBeginning
+a| [[seekToBeginning]]
+
+[source, java]
+----
+void seekToBeginning(Collection<TopicPartition> partitions)
+----
+
+| seekToEnd
+a| [[seekToEnd]]
+
+[source, java]
+----
+void seekToEnd(Collection<TopicPartition> partitions)
+----
+
+| subscribe
+a| [[subscribe]]
+
+[source, java]
+----
+void subscribe(
+  Collection<String> topics)
+void subscribe(
+  Collection<String> topics,
+  ConsumerRebalanceListener callback)
+void subscribe(
+  Pattern pattern)
+void subscribe(
+  Pattern pattern,
+  ConsumerRebalanceListener callback)
+----
+
+| subscription
+a| [[subscription]]
+
+[source, java]
+----
+Set<String> subscription()
+----
+
+| unsubscribe
+a| [[unsubscribe]]
+
+[source, java]
+----
+void unsubscribe()
+----
+
+| wakeup
+a| [[wakeup]]
+
+[source, java]
+----
+void wakeup()
+----
+
+|===
+
+[[implementations]]
+.Consumers
+[cols="1,2",options="header",width="100%"]
+|===
+| Consumer
+| Description
+
+| <<kafka-consumer-KafkaConsumer.adoc#, KafkaConsumer>>
+| [[KafkaConsumer]] Primary Kafka client
+
+| <<kafka-consumer-MockConsumer.adoc#, MockConsumer>>
+| [[MockConsumer]] Used for unit testing
+
+|===
