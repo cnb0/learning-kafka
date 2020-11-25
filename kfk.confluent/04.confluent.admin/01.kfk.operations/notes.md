@@ -1,10 +1,10 @@
 
 
 
-[Self-Balancing Clusters](https://docs.confluent.io/platform/current/kafka/sbc/index.html)
-[Adding and removing brokers](https://docs.confluent.io/platform/current/kafka/sbc/sbc-tutorial.html)
-[Configuration Options and Commands for Self-Balancing Clusters](https://docs.confluent.io/platform/current/kafka/sbc/configuration_options.html)
-       ```
+- [Self-Balancing Clusters](https://docs.confluent.io/platform/current/kafka/sbc/index.html)
+- [Adding and removing brokers](https://docs.confluent.io/platform/current/kafka/sbc/sbc-tutorial.html)
+- [Configuration Options and Commands for Self-Balancing Clusters](https://docs.confluent.io/platform/current/kafka/sbc/configuration_options.html)
+     ```
     - Self-Balancing Configurations on the Brokers
     - Required Configurations for Control Center
     - Update broker configurations on the fly
