@@ -13,6 +13,7 @@
             - Edit the configuration settings for topics
             - Delete a topic
       - [Connect](https://docs.confluent.io/6.0.0/control-center/connect.html)
+           ```
             - Control Center provides the convenience of managing connectors for multiple Kafka Connect clusters. Use Control Center to:
                  - Add a connector by completing UI fields.
                  - Add a connector by uploading a connector configuration file.
@@ -21,6 +22,7 @@
                  - Pause a running connector; resume a paused connector.
                  - Delete a connector.
                  - View the status of connectors in Connect clusters.
+                ```
       - [ksqlDB](https://docs.confluent.io/platform/current/control-center/ksql.html)
         [Integrate ksqlDB](https://docs.confluent.io/6.0.0/ksqldb/integrate-ksql-with-confluent-control-center.html)
       - [Consumers](https://docs.confluent.io/5.3.0/control-center/consumers.html)
