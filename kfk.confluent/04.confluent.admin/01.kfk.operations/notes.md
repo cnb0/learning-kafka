@@ -4,6 +4,7 @@
 [Self-Balancing Clusters](https://docs.confluent.io/platform/current/kafka/sbc/index.html)
 [Adding and removing brokers](https://docs.confluent.io/platform/current/kafka/sbc/sbc-tutorial.html)
 [Configuration Options and Commands for Self-Balancing Clusters](https://docs.confluent.io/platform/current/kafka/sbc/configuration_options.html)
+       ```
     - Self-Balancing Configurations on the Brokers
     - Required Configurations for Control Center
     - Update broker configurations on the fly
@@ -11,11 +12,13 @@
         - Set trigger condition for rebalance
         - Set or remove a custom throttle
     - kafka-remove-brokers-  Broker Removal Phases
+    ```
 
 [Changing Broker Configurations Dynamically](https://docs.confluent.io/platform/current/kafka/dynamic-config.html#)
         - Changing Topic Configurations Dynamically
 
 [Post Kafka Deployment](https://docs.confluent.io/platform/current/kafka/post-deployment.html)
+```
         - Logging
         - Controller
         - State Change Log
@@ -41,5 +44,5 @@
     [Auto Data Balancing](https://docs.confluent.io/platform/current/kafka/rebalancer/index.html)
     [Upgrade Confluent Platform](https://docs.confluent.io/platform/current/installation/upgrade.html#)
     [Prepare ansible install](https://docs.confluent.io/ansible/current/ansible-prepare.html)
-    
+   ``` 
 
