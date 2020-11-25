@@ -5,6 +5,11 @@
           - Build Avro Producers/Consumers, Evolve Schemas
 
 
+- [Schema Management](https://docs.confluent.io/platform/current/schema-registry/index.html#avro-json-and-protobuf-supported-formats-and-extensibility)
+- [Schema tutorial](https://docs.confluent.io/platform/current/schema-registry/schema_registry_onprem_tutorial.html#schema-registry-onprem-tutorial)
+- [Schemas in Control centre](https://docs.confluent.io/platform/current/control-center/topics/schema.html#)
+
+
 ```
 ## Objectives :
 

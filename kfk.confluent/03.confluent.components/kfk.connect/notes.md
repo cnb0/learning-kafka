@@ -1,6 +1,13 @@
 
-## Kafka Connect - Learn How to Source Twitter Data, Store in Apache Kafka Topics & 
-   Sink in ElasticSearch and PostgreSQL
+## Kafka Connect - Learn How to Source Twitter Data, Store in Apache Kafka Topics & Sink in ElasticSearch and PostgreSQL
+
+
+- [Kafka Connect](https://github.com/confluentinc/demo-scene/blob/master/kafka-connect-zero-to-hero/demo_zero-to-hero-with-kafka-connect.adoc)
+- [Kafka Connect Deep Dive](  [kafka connect advanced](https://github.com/confluentinc/demo-scene/blob/master/connect-deepdive/Kafka%20Connect%20Deep%20Dive%20-%20Converters%20and%20Serialisation%20explained.adoc)
+- [Kafka connect JDBC](https://github.com/confluentinc/demo-scene/tree/master/connect-jdbc)
+- [Kafka error handling](https://github.com/confluentinc/demo-scene/tree/master/connect-error-handling)
+
+
 
 ```
 

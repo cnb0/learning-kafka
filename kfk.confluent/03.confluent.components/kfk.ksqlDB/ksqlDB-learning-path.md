@@ -1,6 +1,10 @@
 
 ## [ksqlDB](https://docs.confluent.io/current/ksqldb/index.html)
 
+    [Ksql Workshop](https://github.com/confluentinc/demo-scene/blob/master/ksql-workshop/ksql-workshop.adoc)
+    
+
+
     - Build applications and microservices using Kafka Streams and ksqlDB. 
     - Kafka Streams is a client library for building applications and microservices, 
       where the input and output data are stored in an Apache Kafka® cluster. 
