@@ -754,6 +754,10 @@ We can fix this by   co-partitioning, use the PARTITION BY clause. At KSQL promp
 ```
 create stream driverprofile_rekeyed with (partitions=1) as select * from DRIVER_PROFILE partition by driver_name;  
 
+describe extended driver_profile;
+
+describe extended driverprofile_rekeyed;
+
 select dp2.driver_name, ct.countryname, dp2.rating 
 from DRIVERPROFILE_REKEYED dp2 
 left join COUNTRYTABLE ct on ct.countrycode=dp2.countrycode emit changes;    
