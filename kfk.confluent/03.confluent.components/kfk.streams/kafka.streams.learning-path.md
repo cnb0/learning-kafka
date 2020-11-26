@@ -6,6 +6,11 @@
 - ksqlDB is the streaming SQL engine for Kafka that you can use to perform stream processing tasks using SQL statements.
 
 
+
+
+[kafka streams demo](https://docs.confluent.io/platform/current/streams/kafka-streams-examples/docs/index.html)
+
+
        - Introduction
        - Kafka Streams Quick Start
        - Tutorial: Introduction to Streaming Application Development

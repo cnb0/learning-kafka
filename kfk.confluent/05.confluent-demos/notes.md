@@ -13,6 +13,7 @@
 
     [Build ETL streaming Pipeline](https://github.com/confluentinc/demo-scene/blob/master/build-a-streaming-pipeline/demo_build-a-streaming-pipeline.adoc)
 
+    [distributed tracing]https://github.com/confluentinc/demo-scene/tree/master/distributed-tracing#ksql-server
 
 
 - [cluster Linking Demo](https://github.com/confluentinc/demo-scene/tree/master/cluster-linking)
