@@ -312,6 +312,8 @@ select up.firstname
 from USERPROFILE up 
 left join COUNTRYTABLE ct on ct.countrycode=up.countrycode;
 
+describe up_joined
+describe extended up_joined
 select description from up_joined emit changes;
 ```
 # Pull Queries
