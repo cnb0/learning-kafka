@@ -437,7 +437,7 @@ kafka-console-producer --broker-list localhost:9092 --topic COMPLAINTS_CSV << EO
 Alice, Bob and Carole, Bad driver, 43.10, true
 EOF
 ```
-
+confluent log ksql-server -f 
 
 ## JSON
 
